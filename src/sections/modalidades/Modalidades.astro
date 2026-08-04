@@ -1,0 +1,48 @@
+---
+import type { ModalidadesSection } from "../../lib/cms/types";
+import Container from "../../components/ui/Container.astro";
+import Section from "../../components/ui/Section.astro";
+import Tag from "../../components/ui/Tag.astro";
+
+interface Props extends ModalidadesSection {
+  formRail?: boolean;
+}
+
+const { eyebrow, title, subtitle, items, formRail = false } = Astro.props as Props;
+---
+
+<Section id="modalidades" tone="brand" ariaLabelledby="modalidades-title" formRail={formRail}>
+  <Container formRail={formRail}>
+    <div class="mb-10 max-w-3xl" data-reveal>
+      <Tag class="!text-white">{eyebrow}</Tag>
+      <h2 id="modalidades-title" class="mt-2 text-section-title text-white">{title}</h2>
+      <p class="mt-3 text-[clamp(1.125rem,1.2vw+0.5rem,1.75rem)] font-semibold leading-normal text-white">
+        {subtitle}
+      </p>
+    </div>
+
+    <ul class="grid max-w-content-lead gap-4 md:grid-cols-3" data-reveal>
+      {
+        items.map((item) => (
+          <li class="relative flex min-h-[392px] flex-col justify-end overflow-hidden rounded-xl text-negro">
+            <img
+              src={item.imageSrc}
+              alt={item.imageAlt}
+              class="absolute inset-0 size-full object-cover"
+              width="424"
+              height="576"
+              loading="lazy"
+            />
+            <div class="relative z-10 flex flex-col gap-2.5 bg-white p-3">
+              <span class="inline-flex w-fit items-center justify-center rounded-md bg-brand px-4 py-2.5 text-[12px] font-bold uppercase text-white">
+                {item.name}
+              </span>
+              <p class="text-[18px] font-bold leading-normal text-negro">{item.description}</p>
+              <p class="text-[12px] font-bold leading-[1.55] text-brand">{item.schedule}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </Container>
+</Section>

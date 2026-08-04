@@ -1,0 +1,51 @@
+---
+import type { HeroSection } from "../../lib/cms/types";
+import Container from "../../components/ui/Container.astro";
+
+interface Props extends HeroSection {
+  formRail?: boolean;
+}
+
+const { line1, line2, line3, line4, imageSrc, imageAlt, formRail = false } = Astro.props as Props;
+---
+
+<section
+  id="inicio"
+  class="relative overflow-hidden bg-brand pt-[95px] text-white"
+  aria-labelledby="hero-title"
+>
+  <Container
+    formRail={formRail}
+    class="relative pb-[var(--space-section-y)] pt-8 lg:pt-12"
+  >
+    <div class="relative w-full max-w-hero-media" data-reveal>
+      <div class="@container relative aspect-[896/527] w-full overflow-hidden">
+        <img
+          src={imageSrc}
+          alt={imageAlt}
+          class="absolute inset-0 size-full object-cover object-center"
+          width="896"
+          height="527"
+          loading="eager"
+        />
+        <h1
+          id="hero-title"
+          class="absolute left-[11.4%] top-[18.1%] z-10 flex w-[30%] min-w-[10rem] max-w-[min(16.75rem,28%)] flex-col leading-[1.1]"
+        >
+          <span class="text-[length:clamp(2.75rem,11.75cqw,7.5rem)] font-bold text-white">
+            {line1}
+          </span>
+          <span class="text-[length:clamp(1.375rem,6.3cqw,4rem)] font-bold text-white">
+            {line2}
+          </span>
+          <span class="text-[length:clamp(1.375rem,6.3cqw,4rem)] font-semibold text-brand">
+            {line3}
+          </span>
+          <span class="text-[length:clamp(1.875rem,8.55cqw,5.5rem)] font-bold text-brand">
+            {line4}
+          </span>
+        </h1>
+      </div>
+    </div>
+  </Container>
+</section>

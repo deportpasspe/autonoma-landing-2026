@@ -1,0 +1,58 @@
+---
+import type { HeroSection, Page, SiteSettings } from "../lib/cms/types";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import RegistrationForm from "../components/forms/RegistrationForm.astro";
+import SectionBuilder from "../sections/SectionBuilder.astro";
+import Hero from "../sections/hero/Hero.astro";
+
+interface Props {
+  page: Page;
+  settings: SiteSettings;
+}
+
+const { page, settings } = Astro.props as Props;
+
+const hero = page.sections.find((section): section is HeroSection => section._type === "hero");
+const stickyRest = page.sections.filter(
+  (section) => section._type !== "hero" && section._type !== "campus",
+);
+const afterSections = page.sections.filter((section) => section._type === "campus");
+---
+
+<Header settings={settings} />
+<main id="main-content">
+  <div id="sticky-lead-zone" class="relative flex flex-col">
+    {hero && <div class="order-1"><Hero {...hero} formRail /></div>}
+
+    {
+      hero && (
+        <div
+          class="order-2 px-[var(--space-section-x)] pb-8 lg:pointer-events-none lg:absolute lg:inset-y-0 lg:left-0 lg:right-0 lg:z-20 lg:flex lg:px-0 lg:pb-0"
+          aria-label="Formulario de registro"
+        >
+          <div class="mx-auto flex w-full max-w-[var(--page-max)] justify-center lg:h-full lg:justify-end lg:px-[var(--space-section-x)]">
+            <div class="w-full max-w-[var(--form-card)] lg:pointer-events-auto lg:sticky lg:top-24 lg:h-fit lg:w-[var(--form-rail)] lg:max-w-none lg:pt-8">
+              <RegistrationForm
+                formTitle={hero.formTitle}
+                formSubtitle={hero.formSubtitle}
+                formSubmitLabel={hero.formSubmitLabel}
+                modalities={hero.modalities}
+                campuses={hero.campuses}
+                careers={hero.careers}
+                class="mx-auto"
+              />
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    <div class="order-3">
+      <SectionBuilder sections={stickyRest} formRail />
+    </div>
+  </div>
+
+  <SectionBuilder sections={afterSections} />
+</main>
+<Footer settings={settings} />

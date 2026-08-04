@@ -1,0 +1,25 @@
+---
+type Size = "display" | "hero" | "h2" | "h3" | "card";
+type As = "h1" | "h2" | "h3" | "h4" | "p" | "span";
+
+interface Props {
+  as?: As;
+  size?: Size;
+  class?: string;
+  id?: string;
+}
+
+const { as: Tag = "h2", size = "h2", class: className = "", id } = Astro.props as Props;
+
+const sizes: Record<Size, string> = {
+  display: "text-display font-semibold",
+  hero: "text-hero font-semibold",
+  h2: "text-section-title font-semibold",
+  h3: "text-h3 font-semibold",
+  card: "text-card-title font-semibold",
+};
+---
+
+<Tag id={id} class:list={[sizes[size], className]}>
+  <slot />
+</Tag>

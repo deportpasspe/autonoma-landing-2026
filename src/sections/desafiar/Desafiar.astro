@@ -1,0 +1,113 @@
+---
+import type { DesafiarSection } from "../../lib/cms/types";
+import Container from "../../components/ui/Container.astro";
+import Section from "../../components/ui/Section.astro";
+import Tag from "../../components/ui/Tag.astro";
+
+interface Props extends DesafiarSection {
+  formRail?: boolean;
+}
+
+const {
+  eyebrow,
+  title,
+  videoSrc,
+  videoAlt,
+  youtubeUrl,
+  overlayLine1,
+  overlayLine2,
+  overlayLine3,
+  overlayLine4,
+  formRail = false,
+} = Astro.props as Props;
+
+function youtubeIdFromUrl(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname.includes("youtu.be")) {
+      return parsed.pathname.replace("/", "") || null;
+    }
+    return parsed.searchParams.get("v");
+  } catch {
+    return null;
+  }
+}
+
+const youtubeId = youtubeIdFromUrl(youtubeUrl);
+---
+
+<Section id="desafiar" tone="lavender" ariaLabelledby="desafiar-title" class="!pt-16 md:!pt-20" formRail={formRail}>
+  <Container formRail={formRail}>
+    <div class="mb-10 max-w-[min(100%,clamp(37.5rem,36vw,45rem))]" data-reveal>
+      <Tag class="text-brand">{eyebrow}</Tag>
+      <h2 id="desafiar-title" class="mt-3 text-section-title text-brand">{title}</h2>
+    </div>
+
+    <div
+      class="relative aspect-[790/444] w-full max-w-content-media overflow-hidden rounded-[var(--radius-card)] bg-negro/20"
+      data-reveal
+      data-youtube-player
+      data-youtube-id={youtubeId ?? undefined}
+    >
+      <img
+        src={videoSrc}
+        alt={videoAlt}
+        class="absolute inset-0 size-full object-cover"
+        width="790"
+        height="444"
+        loading="lazy"
+        data-youtube-poster
+      />
+      <div class="absolute left-6 top-1/2 flex -translate-y-1/2 flex-col leading-[1.1] md:left-10" data-youtube-overlay>
+        <span class="text-[clamp(2.75rem,6vw,5.25rem)] font-bold text-white">{overlayLine1}</span>
+        <span class="text-[clamp(1.5rem,3.2vw,2.75rem)] font-bold text-white">{overlayLine2}</span>
+        <span class="text-[clamp(1.5rem,3.2vw,2.75rem)] font-semibold text-brand">{overlayLine3}</span>
+        <span class="text-[clamp(2rem,4.2vw,3.75rem)] font-bold text-brand">{overlayLine4}</span>
+      </div>
+      <button
+        type="button"
+        class="absolute left-1/2 top-[43%] inline-flex size-[90px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-brand pl-1 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+        aria-label="Reproducir video"
+        data-youtube-play
+        disabled={!youtubeId}
+      >
+        <svg width="23" height="26" viewBox="0 0 23 26" fill="currentColor" aria-hidden="true">
+          <path
+            d="M2.034 0c.2 0 .4 0 .6 0 .583.119 1.13.323 1.646.62 5.64 3.237 11.284 6.47 16.92 9.715.406.235.797.522 1.13.853.91.899.948 2.06.146 3.051-.352.434-.803.743-1.282 1.019-5.634 3.231-11.266 6.466-16.906 9.686-.407.233-.854.418-1.306.541-1.222.335-2.27-.22-2.725-1.399A4.3 4.3 0 0 1 0 22.393V3.186c0-.258.008-.516.04-.772.08-.702.293-1.347.819-1.855C1.19.238 1.602.102 2.034 0Z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </Container>
+</Section>
+
+<script>
+  function playYouTube(root: HTMLElement) {
+    if (root.dataset.playing === "true") return;
+    const id = root.dataset.youtubeId;
+    if (!id) return;
+
+    const iframe = document.createElement("iframe");
+    iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1`;
+    iframe.title = "Video institucional Universidad Autónoma";
+    iframe.allow =
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.allowFullscreen = true;
+    iframe.className = "absolute inset-0 size-full border-0";
+
+    root.querySelector("[data-youtube-poster]")?.remove();
+    root.querySelector("[data-youtube-overlay]")?.remove();
+    root.querySelector("[data-youtube-play]")?.remove();
+    root.appendChild(iframe);
+    root.dataset.playing = "true";
+  }
+
+  document.querySelectorAll<HTMLElement>("#desafiar [data-youtube-player]").forEach((root) => {
+    const play = root.querySelector<HTMLButtonElement>("[data-youtube-play]");
+    play?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      playYouTube(root);
+    });
+    root.addEventListener("click", () => playYouTube(root));
+  });
+</script>

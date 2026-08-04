@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HomeView from "../views/HomeView.astro";
+import { getPage, getSettings } from "../lib/cms";
+import { buildPageMeta } from "../lib/seo/meta";
+
+const page = await getPage("home");
+const settings = await getSettings();
+
+if (!page) {
+  throw new Error("Home page fixture missing");
+}
+
+const meta = buildPageMeta({
+  title: page.title,
+  description: page.description,
+  path: "/",
+});
+---
+
+<BaseLayout title={meta.title} description={meta.description} canonical={meta.canonical}>
+  <HomeView page={page} settings={settings} />
+</BaseLayout>

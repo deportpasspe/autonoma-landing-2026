@@ -1,0 +1,24 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  required?: boolean;
+  describedBy?: string;
+  class?: string;
+}
+
+const { id, name, required = false, describedBy, class: className = "" } = Astro.props;
+
+const selectClass =
+  "min-h-11 w-full appearance-none rounded-lg border border-border bg-white px-4 py-2.5 text-body text-black focus-visible:border-brand focus-visible:outline-none";
+---
+
+<select
+  id={id}
+  name={name}
+  required={required}
+  aria-describedby={describedBy}
+  class:list={[selectClass, className]}
+>
+  <slot />
+</select>

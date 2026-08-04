@@ -1,0 +1,31 @@
+---
+export interface Props {
+  narrow?: boolean;
+  formRail?: boolean;
+  class?: string;
+}
+
+const {
+  narrow = false,
+  formRail = false,
+  class: className = "",
+} = Astro.props as Props;
+---
+
+<div
+  class:list={[
+    "mx-auto w-full max-w-[var(--page-max)] px-[var(--space-section-x)]",
+    narrow && "max-w-[var(--content-narrow)]",
+    className,
+  ]}
+>
+  {
+    formRail ? (
+      <div class="form-rail-content">
+        <slot />
+      </div>
+    ) : (
+      <slot />
+    )
+  }
+</div>

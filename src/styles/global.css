@@ -1,0 +1,215 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-brand: #ff6600;
+  --color-brand-dark: #e55c00;
+  --color-negro: #121212;
+  --color-white: #ffffff;
+  --color-lavender: #cac7ff;
+  --color-yellow: #ffe256;
+  --color-mint: #b6f491;
+  --color-sky: #92e8ff;
+  --color-sky-soft: #dbeafe;
+  --color-surface: #ffffff;
+  --color-border: #e5e5e5;
+  --color-text-muted: #4a4a4a;
+
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-sans: "Bricolage Grotesque", system-ui, sans-serif;
+
+  --text-hero: clamp(2.75rem, 7vw, 5.5rem);
+  --text-section: clamp(1.75rem, 3.2vw + 0.5rem, 3.25rem);
+  --text-display: clamp(2rem, 5vw, 4rem);
+  --text-h2: clamp(1.5rem, 2.5vw + 0.5rem, 2.75rem);
+  --text-h3: clamp(1.125rem, 1.5vw + 0.5rem, 1.75rem);
+  --text-stat: clamp(2rem, 2vw + 1rem, 2.75rem);
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-eyebrow: clamp(1.25rem, 1.2vw + 0.5rem, 1.75rem);
+
+  --leading-display: 1.1;
+  --leading-heading: 1.1;
+  --leading-normal: 1.45;
+
+  --space-section-y: clamp(3.5rem, 5vw + 1rem, 7.5rem);
+  /* Side inset scales with viewport; keeps breathing room without boxing content */
+  --space-section-x: clamp(1.25rem, 3.2vw, 6rem);
+  --space-gap: 1rem;
+  --space-gap-lg: 1.5rem;
+  --space-stack: 2.5rem;
+
+  /*
+    Figma artboard is 1440. On wider screens the shell tracks the viewport
+    (minus only the side inset) so content doesn't sit in a tiny centered rail.
+  */
+  --page-max: min(120rem, 100%);
+  --content-narrow: 54rem;
+  --content-lead: clamp(53.5rem, 58vw, 72rem);
+  --content-media: clamp(49.375rem, 54vw, 66rem);
+  --hero-media: clamp(56rem, 62vw, 78rem);
+  --grid-gap: 1rem;
+  --form-rail: clamp(26.25rem, 24vw, 30rem);
+  --form-rail-gap: clamp(1.5rem, 1.5vw, 2.5rem);
+  --form-card: clamp(25.25rem, 23vw, 28.75rem);
+
+  --radius-card: 1rem;
+  --radius-input: 0.75rem;
+  --radius-button: 0.75rem;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 180ms;
+  --duration-med: 420ms;
+  --duration-reveal: 900ms;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    @apply bg-white font-sans text-negro antialiased;
+    font-size: var(--text-body);
+    line-height: var(--leading-normal);
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand;
+  }
+}
+
+@layer utilities {
+  .text-hero {
+    font-family: var(--font-display);
+    font-size: var(--text-hero);
+    line-height: var(--leading-display);
+    font-weight: 700;
+  }
+
+  .text-section-title {
+    font-family: var(--font-display);
+    font-size: var(--text-section);
+    line-height: var(--leading-heading);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .text-display {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+    line-height: var(--leading-display);
+    font-weight: 700;
+  }
+
+  .text-h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    line-height: var(--leading-heading);
+    font-weight: 700;
+  }
+
+  .text-h3 {
+    font-size: var(--text-h3);
+    line-height: var(--leading-heading);
+    font-weight: 700;
+  }
+
+  .text-stat {
+    font-family: var(--font-display);
+    font-size: var(--text-stat);
+    line-height: 1.1;
+    font-weight: 700;
+  }
+
+  .text-body {
+    font-size: var(--text-body);
+    line-height: var(--leading-normal);
+  }
+
+  .text-small {
+    font-size: var(--text-small);
+    line-height: var(--leading-normal);
+  }
+
+  .text-eyebrow {
+    font-size: var(--text-eyebrow);
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-brand focus:px-4 focus:py-2 focus:text-white;
+  }
+
+  .reveal-init {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition:
+      opacity var(--duration-reveal) var(--ease-out),
+      transform var(--duration-reveal) var(--ease-out);
+  }
+
+  .reveal-init.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Same outer Container as Campus; inset only the content so the sticky form can sit in the rail */
+  @media (min-width: 1024px) {
+    .form-rail-content {
+      padding-right: calc(var(--form-rail) + var(--form-rail-gap));
+    }
+  }
+
+  .max-w-content-lead {
+    max-width: min(100%, var(--content-lead));
+  }
+
+  .max-w-content-media {
+    max-width: min(100%, var(--content-media));
+  }
+
+  .max-w-hero-media {
+    max-width: min(100%, var(--hero-media));
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --text-body: 1.0625rem;
+    --text-small: 0.9375rem;
+    --text-section: clamp(2.625rem, 2vw + 1rem, 3.5rem);
+    --text-eyebrow: clamp(1.5rem, 0.8vw + 0.75rem, 1.875rem);
+  }
+}
+
+@media (min-width: 1920px) {
+  :root {
+    --page-max: min(130rem, 100%);
+    --content-lead: min(76rem, 62vw);
+    --content-media: min(70rem, 56vw);
+    --hero-media: min(84rem, 66vw);
+    --form-rail: 32rem;
+    --form-card: 30rem;
+    --form-rail-gap: 2.5rem;
+    --space-section-y: clamp(6rem, 4.5vw, 9rem);
+    --space-section-x: clamp(4.5rem, 3.5vw, 7rem);
+    --text-section: clamp(3rem, 1.8vw + 1rem, 3.75rem);
+  }
+}
