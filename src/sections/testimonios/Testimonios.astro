@@ -41,47 +41,57 @@ function youtubeIdFromUrl(url: string): string | null {
               data-index={index}
               hidden={index !== 0}
             >
-              <div class="relative">
-                <div class="relative aspect-[588/197] w-full overflow-hidden rounded-xl bg-negro/20">
-                  <img
-                    src={item.videoSrc}
-                    alt={item.videoAlt}
-                    class="absolute inset-0 size-full object-cover"
-                    width="588"
-                    height="197"
-                    loading="lazy"
-                  />
-                  <div class="absolute inset-0 bg-black/20"></div>
-                  <button
-                    type="button"
-                    class="absolute left-1/2 top-1/2 inline-flex size-[42px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-brand text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:opacity-50"
-                    aria-label={`Reproducir testimonio de ${item.author}`}
-                    data-video-modal-open
-                    data-youtube-id={youtubeId ?? undefined}
-                    data-video-title={`Testimonio de ${item.author}`}
-                    disabled={!youtubeId}
+              <div class="relative pointer-events-none">
+                <div class="relative">
+                  <div class="relative aspect-[588/197] w-full overflow-hidden rounded-xl bg-negro/20">
+                    <img
+                      src={item.videoSrc}
+                      alt={item.videoAlt}
+                      class="absolute inset-0 size-full object-cover"
+                      width="588"
+                      height="197"
+                      loading="lazy"
+                    />
+                    <div class="absolute inset-0 bg-black/20"></div>
+                    <span
+                      class:list={[
+                        "absolute left-1/2 top-1/2 inline-flex size-[42px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-brand text-white",
+                        !youtubeId && "opacity-50",
+                      ]}
+                      aria-hidden="true"
+                    >
+                      <svg width="16" height="18" viewBox="0 0 16 18" fill="currentColor" aria-hidden="true">
+                        <path d="M1 1.5v15l14-7.5L1 1.5z"></path>
+                      </svg>
+                    </span>
+                  </div>
+
+                  <p
+                    class="absolute -left-1 bottom-0 translate-y-[40%] text-[clamp(6rem,12vw,15rem)] font-bold leading-none text-brand/90"
+                    aria-hidden="true"
                   >
-                    <svg width="16" height="18" viewBox="0 0 16 18" fill="currentColor" aria-hidden="true">
-                      <path d="M1 1.5v15l14-7.5L1 1.5z"></path>
-                    </svg>
-                  </button>
+                    “
+                  </p>
                 </div>
 
-                <p
-                  class="pointer-events-none absolute -left-1 bottom-0 translate-y-[40%] text-[clamp(6rem,12vw,15rem)] font-bold leading-none text-brand/90"
-                  aria-hidden="true"
-                >
-                  “
-                </p>
+                <blockquote class="relative z-10 mt-10 max-w-xl">
+                  <p class="text-[1.25rem] leading-normal text-negro">“{item.quote}”</p>
+                  <footer class="mt-6">
+                    <p class="text-[1.25rem] font-bold text-brand">{item.author}</p>
+                    <p class="mt-1 text-body text-negro">{item.role}</p>
+                  </footer>
+                </blockquote>
               </div>
 
-              <blockquote class="relative z-10 mt-10 max-w-xl">
-                <p class="text-[1.25rem] leading-normal text-negro">“{item.quote}”</p>
-                <footer class="mt-6">
-                  <p class="text-[1.25rem] font-bold text-brand">{item.author}</p>
-                  <p class="mt-1 text-body text-negro">{item.role}</p>
-                </footer>
-              </blockquote>
+              <button
+                type="button"
+                class="absolute inset-0 z-20 cursor-pointer rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed"
+                aria-label={`Reproducir testimonio de ${item.author}`}
+                data-video-modal-open
+                data-youtube-id={youtubeId ?? undefined}
+                data-video-title={`Testimonio de ${item.author}`}
+                disabled={!youtubeId}
+              ></button>
             </div>
           );
         })
