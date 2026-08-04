@@ -6,6 +6,7 @@ interface Props {
   placeholder?: string;
   required?: boolean;
   autocomplete?: string;
+  inputmode?: "none" | "text" | "tel" | "url" | "email" | "numeric" | "decimal" | "search";
   describedBy?: string;
   class?: string;
 }
@@ -17,6 +18,7 @@ const {
   placeholder,
   required = false,
   autocomplete,
+  inputmode,
   describedBy,
   class: className = "",
 } = Astro.props;
@@ -32,6 +34,7 @@ const inputClass =
   placeholder={placeholder}
   required={required}
   autocomplete={autocomplete}
+  inputmode={inputmode}
   aria-describedby={describedBy}
   class:list={[inputClass, className]}
 />

@@ -32,14 +32,15 @@ const sourceTones = {
       <h2 id="cifras-title" class="mt-2.5 text-section-title text-white">{title}</h2>
     </div>
 
-    <ul class="grid max-w-content-lead grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
+    <ul class="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal-stagger>
       {
         stats.map((stat) => (
           <li
             class:list={[
-              "flex min-h-[clamp(13.9rem,14vw,16rem)] flex-col gap-4 rounded-xl px-3.5 py-4 text-negro",
+              "card-lift flex min-h-[clamp(13.9rem,14vw,16rem)] flex-col gap-4 rounded-xl px-3.5 py-4 text-negro",
               tones[stat.tone],
             ]}
+            data-reveal-item
           >
             <div class="flex items-start justify-between gap-3">
               <p class="text-stat font-bold uppercase leading-[1.1] text-brand">{stat.value}</p>

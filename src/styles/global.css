@@ -49,6 +49,7 @@
   --content-media: clamp(49.375rem, 54vw, 66rem);
   --hero-media: clamp(56rem, 62vw, 78rem);
   --grid-gap: 1rem;
+  /* Form grows from ~1280; preferred vw stayed below min until ~1750 before */
   --form-rail: clamp(26.25rem, 24vw, 30rem);
   --form-rail-gap: clamp(1.5rem, 1.5vw, 2.5rem);
   --form-card: clamp(25.25rem, 23vw, 28.75rem);
@@ -60,7 +61,7 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --duration-fast: 180ms;
   --duration-med: 420ms;
-  --duration-reveal: 900ms;
+  --duration-reveal: 780ms;
 }
 
 @layer base {
@@ -159,15 +160,63 @@
 
   .reveal-init {
     opacity: 0;
-    transform: translateY(1.25rem);
+    transform: translateY(1.35rem);
     transition:
       opacity var(--duration-reveal) var(--ease-out),
       transform var(--duration-reveal) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
   }
 
   .reveal-init.is-visible {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-init {
+      opacity: 1;
+      transform: none;
+      transition: none;
+      will-change: auto;
+    }
+  }
+
+  /* Subtle card lift — used on modality / stat / feature cards */
+  .card-lift {
+    transition:
+      transform var(--duration-med) var(--ease-out),
+      box-shadow var(--duration-med) var(--ease-out);
+  }
+
+  .card-lift:hover {
+    transform: translateY(-0.35rem);
+    box-shadow: 0 18px 40px rgba(18, 18, 18, 0.14);
+  }
+
+  .card-lift:focus-within {
+    transform: translateY(-0.35rem);
+    box-shadow: 0 18px 40px rgba(18, 18, 18, 0.14);
+  }
+
+  .card-lift img[data-card-media] {
+    transition: transform var(--duration-reveal) var(--ease-out);
+  }
+
+  .card-lift:hover img[data-card-media],
+  .card-lift:focus-within img[data-card-media] {
+    transform: scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-lift,
+    .card-lift:hover,
+    .card-lift:focus-within,
+    .card-lift img[data-card-media] {
+      transition: none;
+      transform: none;
+      box-shadow: none;
+    }
   }
 
   /* Same outer Container as Campus; inset only the content so the sticky form can sit in the rail */
@@ -190,24 +239,41 @@
   }
 }
 
+@media (min-width: 1280px) {
+  :root {
+    --form-rail: clamp(28rem, 22vw + 6rem, 32rem);
+    --form-card: clamp(27rem, 21vw + 6rem, 30.5rem);
+    --content-lead: clamp(56rem, 60vw, 78rem);
+    --content-media: clamp(52rem, 56vw, 72rem);
+    --hero-media: clamp(58rem, 64vw, 82rem);
+  }
+}
+
 @media (min-width: 1440px) {
   :root {
     --text-body: 1.0625rem;
     --text-small: 0.9375rem;
     --text-section: clamp(2.625rem, 2vw + 1rem, 3.5rem);
     --text-eyebrow: clamp(1.5rem, 0.8vw + 0.75rem, 1.875rem);
+    --form-rail: clamp(30rem, 24vw + 4rem, 34rem);
+    --form-card: clamp(28.75rem, 23vw + 4rem, 32.5rem);
+    --form-rail-gap: clamp(1.75rem, 1.4vw, 2.5rem);
+    --content-lead: clamp(58rem, 64vw, 88rem);
+    --content-media: clamp(54rem, 60vw, 82rem);
+    --hero-media: clamp(60rem, 68vw, 92rem);
   }
 }
 
 @media (min-width: 1920px) {
   :root {
     --page-max: min(130rem, 100%);
-    --content-lead: min(76rem, 62vw);
-    --content-media: min(70rem, 56vw);
-    --hero-media: min(84rem, 66vw);
-    --form-rail: 32rem;
-    --form-card: 30rem;
-    --form-rail-gap: 2.5rem;
+    /* Fill form-rail-content; avoid left-clustered band beside the sticky form */
+    --content-lead: min(96rem, 100%);
+    --content-media: min(90rem, 100%);
+    --hero-media: min(96rem, 100%);
+    --form-rail: 36rem;
+    --form-card: 34rem;
+    --form-rail-gap: 2.75rem;
     --space-section-y: clamp(6rem, 4.5vw, 9rem);
     --space-section-x: clamp(4.5rem, 3.5vw, 7rem);
     --text-section: clamp(3rem, 1.8vw + 1rem, 3.75rem);

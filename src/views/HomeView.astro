@@ -28,11 +28,15 @@ const afterSections = page.sections.filter((section) => section._type === "campu
     {
       hero && (
         <div
-          class="order-2 px-[var(--space-section-x)] pb-8 lg:pointer-events-none lg:absolute lg:inset-y-0 lg:left-0 lg:right-0 lg:z-20 lg:flex lg:px-0 lg:pb-0"
+          class="order-2 bg-brand px-[var(--space-section-x)] pb-10 pt-2 lg:pointer-events-none lg:absolute lg:inset-y-0 lg:left-0 lg:right-0 lg:z-20 lg:flex lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-0"
           aria-label="Formulario de registro"
         >
           <div class="mx-auto flex w-full max-w-[var(--page-max)] justify-center lg:h-full lg:justify-end lg:px-[var(--space-section-x)]">
-            <div class="w-full max-w-[var(--form-card)] lg:pointer-events-auto lg:sticky lg:top-24 lg:h-fit lg:w-[var(--form-rail)] lg:max-w-none lg:pt-8">
+            <div
+              data-sticky-form-rail
+              data-reveal
+              class="-mt-4 w-full sm:-mt-6 lg:pointer-events-auto lg:sticky lg:top-24 lg:mt-[var(--form-center-mt,0px)] lg:h-fit lg:w-[var(--form-rail)]"
+            >
               <RegistrationForm
                 formTitle={hero.formTitle}
                 formSubtitle={hero.formSubtitle}
@@ -40,7 +44,7 @@ const afterSections = page.sections.filter((section) => section._type === "campu
                 modalities={hero.modalities}
                 campuses={hero.campuses}
                 careers={hero.careers}
-                class="mx-auto"
+                class="mx-auto w-full lg:max-w-[var(--form-card)]"
               />
             </div>
           </div>
@@ -56,3 +60,37 @@ const afterSections = page.sections.filter((section) => section._type === "campu
   <SectionBuilder sections={afterSections} />
 </main>
 <Footer settings={settings} />
+
+{
+  hero && (
+    <script>
+      function syncStickyFormCenter() {
+        const heroEl = document.getElementById("inicio");
+        const rail = document.querySelector("[data-sticky-form-rail]");
+        if (!(rail instanceof HTMLElement)) return;
+
+        if (!heroEl || !window.matchMedia("(min-width: 1024px)").matches) {
+          rail.style.removeProperty("--form-center-mt");
+          return;
+        }
+
+        // Center against the hero content band below the header offset (pt-[95px]),
+        // matching the left column (image + headline), not the full section box.
+        const paddingTop = parseFloat(getComputedStyle(heroEl).paddingTop) || 0;
+        const bandHeight = Math.max(0, heroEl.offsetHeight - paddingTop);
+        const formHeight = rail.offsetHeight;
+        const marginTop = paddingTop + Math.max(0, (bandHeight - formHeight) / 2);
+        rail.style.setProperty("--form-center-mt", `${marginTop}px`);
+      }
+
+      syncStickyFormCenter();
+
+      const heroEl = document.getElementById("inicio");
+      const rail = document.querySelector("[data-sticky-form-rail]");
+      const ro = new ResizeObserver(() => syncStickyFormCenter());
+      if (heroEl) ro.observe(heroEl);
+      if (rail) ro.observe(rail);
+      window.addEventListener("resize", syncStickyFormCenter);
+    </script>
+  )
+}

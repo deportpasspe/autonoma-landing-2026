@@ -21,7 +21,7 @@ const { eyebrow, title, subtitle, groups, formRail = false } = Astro.props as Pr
       </p>
     </div>
 
-    <div class="flex max-w-content-lead flex-col gap-3" data-reveal data-accordion>
+    <div class="flex w-full flex-col gap-3" data-reveal-stagger data-accordion>
       {
         groups.map((group, index) => {
           const open = index === 0;
@@ -30,6 +30,7 @@ const { eyebrow, title, subtitle, groups, formRail = false } = Astro.props as Pr
               class="overflow-hidden rounded-xl"
               data-accordion-item
               data-open={open ? "true" : "false"}
+              data-reveal-item
             >
               <button
                 type="button"

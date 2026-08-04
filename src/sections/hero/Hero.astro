@@ -16,32 +16,32 @@ const { line1, line2, line3, line4, imageSrc, imageAlt, formRail = false } = Ast
 >
   <Container
     formRail={formRail}
-    class="relative pb-[var(--space-section-y)] pt-8 lg:pt-12"
+    class="relative pb-6 pt-6 md:pb-8 md:pt-8 lg:pb-[var(--space-section-y)] lg:pt-12"
   >
-    <div class="relative w-full max-w-hero-media" data-reveal>
-      <div class="@container relative aspect-[896/527] w-full overflow-hidden">
+    <div class="relative w-full" data-reveal>
+      <div class="@container relative w-full overflow-hidden rounded-[var(--radius-card)] lg:rounded-none lg:overflow-visible">
         <img
           src={imageSrc}
           alt={imageAlt}
-          class="absolute inset-0 size-full object-cover object-center"
-          width="896"
+          class="block h-auto w-full"
+          width="856"
           height="527"
           loading="eager"
         />
         <h1
           id="hero-title"
-          class="absolute left-[11.4%] top-[18.1%] z-10 flex w-[30%] min-w-[10rem] max-w-[min(16.75rem,28%)] flex-col leading-[1.1]"
+          class="absolute left-[8%] top-[16%] z-10 flex w-[42%] min-w-[9rem] max-w-[min(16.75rem,46%)] flex-col leading-[1.1] sm:left-[11.4%] sm:top-[18.1%] sm:w-[30%] sm:max-w-[min(16.75rem,28%)]"
         >
-          <span class="text-[length:clamp(2.75rem,11.75cqw,7.5rem)] font-bold text-white">
+          <span class="text-[length:clamp(1.75rem,11.75cqw,7.5rem)] font-bold text-white">
             {line1}
           </span>
-          <span class="text-[length:clamp(1.375rem,6.3cqw,4rem)] font-bold text-white">
+          <span class="text-[length:clamp(1rem,6.3cqw,4rem)] font-bold text-white">
             {line2}
           </span>
-          <span class="text-[length:clamp(1.375rem,6.3cqw,4rem)] font-semibold text-brand">
+          <span class="text-[length:clamp(1rem,6.3cqw,4rem)] font-semibold text-brand">
             {line3}
           </span>
-          <span class="text-[length:clamp(1.875rem,8.55cqw,5.5rem)] font-bold text-brand">
+          <span class="text-[length:clamp(1.25rem,8.55cqw,5.5rem)] font-bold text-brand">
             {line4}
           </span>
         </h1>

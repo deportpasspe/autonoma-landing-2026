@@ -34,17 +34,34 @@ function youtubeIdFromUrl(url: string): string | null {
 }
 
 const youtubeId = youtubeIdFromUrl(youtubeUrl);
+
+/** Force 2-line headline on md+: "…para" / "desafiar…" */
+const titleBreak = title.match(/^(.*?para)\s+(.*)$/i);
+const titleLine1 = titleBreak?.[1] ?? title;
+const titleLine2 = titleBreak?.[2] ?? "";
 ---
 
 <Section id="desafiar" tone="lavender" ariaLabelledby="desafiar-title" class="!pt-16 md:!pt-20" formRail={formRail}>
   <Container formRail={formRail}>
-    <div class="mb-10 max-w-[min(100%,clamp(37.5rem,36vw,45rem))]" data-reveal>
+    <div class="mb-10 max-w-[min(100%,clamp(42rem,52vw,54rem))]" data-reveal>
       <Tag class="text-brand">{eyebrow}</Tag>
-      <h2 id="desafiar-title" class="mt-3 text-section-title text-brand">{title}</h2>
+      <h2 id="desafiar-title" class="mt-3 text-section-title text-brand">
+        {
+          titleLine2 ? (
+            <>
+              {titleLine1}{" "}
+              <br class="hidden md:block" />
+              {titleLine2}
+            </>
+          ) : (
+            title
+          )
+        }
+      </h2>
     </div>
 
     <div
-      class="relative aspect-[790/444] w-full max-w-content-media overflow-hidden rounded-[var(--radius-card)] bg-negro/20"
+      class="relative aspect-[790/444] w-full overflow-hidden rounded-[var(--radius-card)] bg-negro/20"
       data-reveal
       data-youtube-player
       data-youtube-id={youtubeId ?? undefined}

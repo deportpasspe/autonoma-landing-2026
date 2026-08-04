@@ -11,17 +11,20 @@ const { settings } = Astro.props as Props;
 
 <header class="absolute inset-x-0 top-0 z-50">
   <Container>
-    <div class="flex min-h-[95px] items-center justify-between gap-4 py-3">
+    <div class="flex min-h-[95px] items-center justify-between gap-6 py-3 lg:gap-8">
       <a href="/" class="flex shrink-0 items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
         <img src={settings.logoSrc} alt={settings.logoAlt} width="250" height="71" class="h-14 w-auto md:h-[71px]" />
       </a>
 
-      <nav class="hidden items-center gap-2 lg:flex" aria-label="Navegación principal">
+      <nav
+        class="hidden min-w-0 flex-1 items-center justify-end gap-1 lg:flex xl:gap-2 2xl:gap-4"
+        aria-label="Navegación principal"
+      >
         {
           settings.navLinks.map((link) => (
             <a
               href={link.href}
-              class="inline-flex min-h-11 items-center px-2.5 text-[15px] font-semibold text-white transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              class="inline-flex min-h-11 min-w-[5.5rem] items-center justify-center px-2.5 py-2.5 text-center text-[clamp(1rem,0.45vw+0.75rem,1.25rem)] font-medium leading-normal text-white transition-opacity duration-200 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white xl:min-w-[6.5rem] xl:px-3"
             >
               {link.label}
             </a>
@@ -52,7 +55,7 @@ const { settings } = Astro.props as Props;
             <li>
               <a
                 href={link.href}
-                class="flex min-h-11 items-center rounded-[var(--radius-button)] px-3 text-body font-semibold text-white hover:bg-white/10"
+                class="flex min-h-12 items-center rounded-[var(--radius-button)] px-3 text-[1.125rem] font-medium text-white hover:bg-white/10"
                 data-mobile-nav-link
               >
                 {link.label}

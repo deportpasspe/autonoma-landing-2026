@@ -17,11 +17,11 @@ const { eyebrow, title, subtitle, campuses } = Astro.props as Props;
       <p class="mt-4 text-[clamp(1rem,2vw,1.25rem)] text-text-muted">{subtitle}</p>
     </div>
 
-    <ul class="grid gap-5 lg:grid-cols-2" data-reveal>
+    <ul class="grid gap-5 lg:grid-cols-2" data-reveal-stagger>
       {
         campuses.map((campus) => (
-          <li class="relative overflow-hidden rounded-[var(--radius-card)] bg-negro/5">
-            <div class="relative aspect-[638/512]" data-campus-slider>
+          <li class="card-lift relative rounded-[var(--radius-card)]" data-reveal-item>
+            <div class="relative aspect-[638/512] overflow-hidden rounded-[var(--radius-card)]" data-campus-slider>
               {campus.images.map((image, index) => (
                 <div
                   class:list={["absolute inset-0", index !== 0 && "hidden"]}
@@ -36,6 +36,7 @@ const { eyebrow, title, subtitle, campuses } = Astro.props as Props;
                     width="638"
                     height="512"
                     loading="lazy"
+                    data-card-media
                   />
                 </div>
               ))}
