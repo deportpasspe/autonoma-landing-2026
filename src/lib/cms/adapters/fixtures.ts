@@ -7,6 +7,8 @@ const careers = [
   "Administración",
   "Contabilidad",
   "Marketing",
+  "Medicina Humana",
+  "Optometría",
   "Enfermería",
   "Obstetricia",
   "Derecho",
@@ -121,11 +123,11 @@ export const homePage: Page = {
       subtitle: "26 carreras para quienes saben exactamente lo que quieren",
       groups: [
         {
-          name: "Educación",
+          name: "Facultad de Educación",
           items: ["Educación Inicial", "Educación Primaria"],
         },
         {
-          name: "Ciencia en Gestión y Comunicaciones",
+          name: "Facultad de Ciencia en Gestión y Comunicaciones",
           items: [
             "Administración de Empresas",
             "Administración y Marketing",
@@ -137,9 +139,10 @@ export const homePage: Page = {
           ],
         },
         {
-          name: "Ciencia de la Salud",
+          name: "Facultad de Ciencia de la Salud",
           items: [
-            "Medicina Humana",
+            "Medicina Humana (Nuevo)",
+            "Optometría (Nuevo)",
             "Farmacia y Bioquímica",
             "Obstetricia",
             "Nutrición y Dietética",
@@ -150,11 +153,11 @@ export const homePage: Page = {
           ],
         },
         {
-          name: "Derecho",
+          name: "Facultad de Derecho",
           items: ["Derecho"],
         },
         {
-          name: "Ingeniería y Arquitectura",
+          name: "Facultad de Ingeniería y Arquitectura",
           items: [
             "Arquitectura",
             "Ingeniería Ambiental",

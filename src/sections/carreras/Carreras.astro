@@ -23,8 +23,8 @@ const { eyebrow, title, subtitle, groups, formRail = false } = Astro.props as Pr
 
     <div class="flex w-full flex-col gap-3" data-reveal-stagger data-accordion>
       {
-        groups.map((group, index) => {
-          const open = index === 0;
+        groups.map((group) => {
+          const open = group.name.includes("Ciencia de la Salud");
           return (
             <div
               class="overflow-hidden rounded-xl"
