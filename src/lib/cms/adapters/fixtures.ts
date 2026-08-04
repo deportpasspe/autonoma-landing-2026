@@ -272,17 +272,17 @@ export const homePage: Page = {
         {
           name: "Lima Sur",
           images: [
-            { src: "/assets/figma/campus/lima-sur.webp", alt: "Campus Lima Sur — vista 1" },
-            { src: "/assets/figma/campus/lima-sur.webp", alt: "Campus Lima Sur — vista 2" },
-            { src: "/assets/figma/campus/lima-sur.webp", alt: "Campus Lima Sur — vista 3" },
+            { src: "/assets/figma/campus/lima-sur-2.webp", alt: "Campus Lima Sur — vista 1" },
+            { src: "/assets/figma/campus/lima-sur-3.webp", alt: "Campus Lima Sur — vista 2" },
+            { src: "/assets/figma/campus/lima-sur-4.webp", alt: "Campus Lima Sur — vista 3" },
           ],
         },
         {
           name: "Lima Norte",
           images: [
-            { src: "/assets/figma/campus/lima-norte.webp", alt: "Campus Lima Norte — vista 1" },
-            { src: "/assets/figma/campus/lima-norte.webp", alt: "Campus Lima Norte — vista 2" },
-            { src: "/assets/figma/campus/lima-norte.webp", alt: "Campus Lima Norte — vista 3" },
+            { src: "/assets/figma/campus/lima-norte-2.webp", alt: "Campus Lima Norte — vista 1" },
+            { src: "/assets/figma/campus/lima-norte-3.webp", alt: "Campus Lima Norte — vista 2" },
+            { src: "/assets/figma/campus/lima-norte-4.webp", alt: "Campus Lima Norte — vista 3" },
           ],
         },
       ],

@@ -20,23 +20,25 @@ const { eyebrow, title, subtitle, campuses } = Astro.props as Props;
     <ul class="grid gap-5 lg:grid-cols-2" data-reveal-stagger>
       {
         campuses.map((campus) => (
-          <li class="card-lift relative rounded-[var(--radius-card)]" data-reveal-item>
+          <li class="relative rounded-[var(--radius-card)]" data-reveal-item>
             <div class="relative aspect-[638/512] overflow-hidden rounded-[var(--radius-card)]" data-campus-slider>
               {campus.images.map((image, index) => (
                 <div
-                  class:list={["absolute inset-0", index !== 0 && "hidden"]}
+                  class:list={[
+                    "absolute inset-0 transition-opacity duration-700 ease-[var(--ease-out)]",
+                    index === 0 ? "opacity-100" : "opacity-0",
+                  ]}
                   data-campus-slide
                   data-index={index}
-                  hidden={index !== 0}
+                  aria-hidden={index === 0 ? "false" : "true"}
                 >
                   <img
                     src={image.src}
                     alt={image.alt}
-                    class="h-full w-full object-cover"
+                    class="size-full object-cover object-center"
                     width="638"
                     height="512"
                     loading="lazy"
-                    data-card-media
                   />
                 </div>
               ))}
@@ -101,7 +103,17 @@ const { eyebrow, title, subtitle, campuses } = Astro.props as Props;
   </Container>
 </Section>
 
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    #campus [data-campus-slide] {
+      transition: none !important;
+    }
+  }
+</style>
+
 <script>
+  const AUTO_MS = 4000;
+
   function showSlide(slider: HTMLElement, index: number) {
     const slides = [...slider.querySelectorAll<HTMLElement>("[data-campus-slide]")];
     const dots = [...slider.querySelectorAll<HTMLButtonElement>("[data-campus-dot]")];
@@ -111,8 +123,9 @@ const { eyebrow, title, subtitle, campuses } = Astro.props as Props;
 
     slides.forEach((slide, i) => {
       const active = i === nextIndex;
-      slide.classList.toggle("hidden", !active);
-      slide.hidden = !active;
+      slide.classList.toggle("opacity-100", active);
+      slide.classList.toggle("opacity-0", !active);
+      slide.setAttribute("aria-hidden", active ? "false" : "true");
     });
 
     dots.forEach((dot, i) => {
@@ -130,22 +143,56 @@ const { eyebrow, title, subtitle, campuses } = Astro.props as Props;
   }
 
   document.querySelectorAll<HTMLElement>("#campus [data-campus-slider]").forEach((slider) => {
+    const slides = slider.querySelectorAll("[data-campus-slide]");
+    if (slides.length < 2) return;
+
     slider.dataset.activeIndex = "0";
+    let timer: ReturnType<typeof setInterval> | null = null;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const stop = () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    const start = () => {
+      if (reduceMotion) return;
+      stop();
+      timer = setInterval(() => {
+        showSlide(slider, currentIndex(slider) + 1);
+      }, AUTO_MS);
+    };
+
+    const goTo = (index: number) => {
+      showSlide(slider, index);
+      start();
+    };
 
     slider.querySelectorAll<HTMLButtonElement>("[data-campus-dot]").forEach((dot) => {
       dot.addEventListener("click", () => {
         const index = Number(dot.dataset.index);
         if (Number.isNaN(index)) return;
-        showSlide(slider, index);
+        goTo(index);
       });
     });
 
     slider.querySelector("[data-campus-prev]")?.addEventListener("click", () => {
-      showSlide(slider, currentIndex(slider) - 1);
+      goTo(currentIndex(slider) - 1);
     });
 
     slider.querySelector("[data-campus-next]")?.addEventListener("click", () => {
-      showSlide(slider, currentIndex(slider) + 1);
+      goTo(currentIndex(slider) + 1);
     });
+
+    slider.addEventListener("mouseenter", stop);
+    slider.addEventListener("mouseleave", start);
+    slider.addEventListener("focusin", stop);
+    slider.addEventListener("focusout", (event) => {
+      if (!slider.contains(event.relatedTarget as Node | null)) start();
+    });
+
+    start();
   });
 </script>
