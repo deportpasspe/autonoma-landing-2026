@@ -56,7 +56,7 @@ export const homePage: Page = {
       line2: "no somos",
       line3: "hijitos de",
       line4: "papá",
-      imageSrc: "/assets/figma/hero/workshop.png",
+      imageSrc: "/assets/figma/hero/img-over-2.png",
       imageAlt: "Estudiante en taller práctico",
       formTitle: "¡Regístrate y recibe más información!",
       formSubtitle: "Escoge la modalidad que prefieras",

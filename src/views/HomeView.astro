@@ -35,7 +35,7 @@ const afterSections = page.sections.filter((section) => section._type === "campu
             <div
               data-sticky-form-rail
               data-reveal
-              class="-mt-4 w-full sm:-mt-6 lg:pointer-events-auto lg:sticky lg:top-24 lg:mt-[var(--form-center-mt,0px)] lg:h-fit lg:w-[var(--form-rail)]"
+              class="-mt-4 w-full sm:-mt-6 lg:pointer-events-auto lg:sticky lg:top-24 lg:mt-0 lg:h-fit lg:w-[var(--form-rail)]"
             >
               <RegistrationForm
                 formTitle={hero.formTitle}
@@ -66,31 +66,41 @@ const afterSections = page.sections.filter((section) => section._type === "campu
     <script>
       function syncStickyFormCenter() {
         const heroEl = document.getElementById("inicio");
+        const zone = document.getElementById("sticky-lead-zone");
         const rail = document.querySelector("[data-sticky-form-rail]");
-        if (!(rail instanceof HTMLElement)) return;
+        const media = document.querySelector("[data-hero-media]");
+        if (!(rail instanceof HTMLElement) || !heroEl || !zone) return;
 
-        if (!heroEl || !window.matchMedia("(min-width: 1024px)").matches) {
-          rail.style.removeProperty("--form-center-mt");
+        if (!window.matchMedia("(min-width: 1024px)").matches) {
+          rail.style.marginTop = "";
           return;
         }
 
-        // Center against the hero content band below the header offset (pt-[95px]),
-        // matching the left column (image + headline), not the full section box.
-        const paddingTop = parseFloat(getComputedStyle(heroEl).paddingTop) || 0;
-        const bandHeight = Math.max(0, heroEl.offsetHeight - paddingTop);
+        const mediaEl = media instanceof HTMLElement ? media : heroEl;
+        const zoneTop = zone.getBoundingClientRect().top + window.scrollY;
+        const mediaRect = mediaEl.getBoundingClientRect();
+        const mediaTop = mediaRect.top + window.scrollY;
+        const mediaHeight = mediaEl.offsetHeight;
         const formHeight = rail.offsetHeight;
-        const marginTop = paddingTop + Math.max(0, (bandHeight - formHeight) / 2);
-        rail.style.setProperty("--form-center-mt", `${marginTop}px`);
+
+        // Center the form against the left hero media block (document coords → zone offset)
+        const mediaCenter = mediaTop - zoneTop + mediaHeight / 2;
+        const marginTop = Math.max(0, mediaCenter - formHeight / 2);
+        rail.style.marginTop = `${marginTop}px`;
       }
 
-      syncStickyFormCenter();
+      const run = () => requestAnimationFrame(syncStickyFormCenter);
+      run();
+      window.addEventListener("load", run);
+      window.addEventListener("resize", run);
 
       const heroEl = document.getElementById("inicio");
       const rail = document.querySelector("[data-sticky-form-rail]");
-      const ro = new ResizeObserver(() => syncStickyFormCenter());
+      const media = document.querySelector("[data-hero-media]");
+      const ro = new ResizeObserver(run);
       if (heroEl) ro.observe(heroEl);
       if (rail) ro.observe(rail);
-      window.addEventListener("resize", syncStickyFormCenter);
+      if (media) ro.observe(media);
     </script>
   )
 }
