@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
-  site: import.meta.env.PUBLIC_SITE_URL || "http://localhost:4321",
+  site: "https://autonoma-landing-2026-doj8.vercel.app",
   output: "static",
   vite: { plugins: [tailwindcss()] },
 });

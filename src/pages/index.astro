@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import HomeView from "../views/HomeView.astro";
 import { getPage, getSettings } from "../lib/cms";
 import { buildPageMeta } from "../lib/seo/meta";
+import type { HeroSection } from "../lib/cms/types";
 
 const page = await getPage("home");
 const settings = await getSettings();
@@ -16,8 +17,11 @@ const meta = buildPageMeta({
   description: page.description,
   path: "/",
 });
+
+const hero = page.sections.find((section): section is HeroSection => section._type === "hero");
+const lcpImage = hero?.imageSrc;
 ---
 
-<BaseLayout title={meta.title} description={meta.description} canonical={meta.canonical}>
+<BaseLayout title={meta.title} description={meta.description} canonical={meta.canonical} lcpImage={lcpImage}>
   <HomeView page={page} settings={settings} />
 </BaseLayout>
