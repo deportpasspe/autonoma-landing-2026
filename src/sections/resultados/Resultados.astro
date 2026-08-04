@@ -27,35 +27,44 @@ const sourceTones = {
 
 <Section id="cifras" tone="brand" ariaLabelledby="cifras-title" formRail={formRail}>
   <Container formRail={formRail}>
-    <div class="mb-8 max-w-[min(100%,clamp(37.5rem,36vw,45rem))]" data-reveal>
+    <div class="mb-5 max-w-[min(100%,clamp(37.5rem,36vw,45rem))] md:mb-8" data-reveal>
       <Tag class="!text-white">{eyebrow}</Tag>
       <h2 id="cifras-title" class="mt-2.5 text-section-title text-white">{title}</h2>
     </div>
 
-    <ul class="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal-stagger>
+    <ul
+      class="grid w-full grid-cols-2 gap-2.5 sm:gap-3 md:gap-4 lg:grid-cols-4"
+      data-reveal-stagger
+    >
       {
         stats.map((stat) => (
           <li
             class:list={[
-              "card-lift flex min-h-[clamp(13.9rem,14vw,16rem)] flex-col gap-4 rounded-xl px-3.5 py-4 text-negro",
+              "card-lift flex min-h-0 flex-col gap-2 rounded-xl px-2.5 py-3 text-negro sm:gap-3 sm:px-3.5 sm:py-4 md:min-h-[clamp(13.9rem,14vw,16rem)] md:gap-4",
               tones[stat.tone],
             ]}
             data-reveal-item
           >
-            <div class="flex items-start justify-between gap-3">
-              <p class="text-stat font-bold uppercase leading-[1.1] text-brand">{stat.value}</p>
+            <div class="flex items-start justify-between gap-2 sm:gap-3">
+              <p class="text-[clamp(1.75rem,7vw,2.75rem)] font-bold uppercase leading-[1.05] text-brand md:text-stat md:leading-[1.1]">
+                {stat.value}
+              </p>
               <img
                 src={stat.iconSrc}
                 alt=""
                 width="36"
                 height="36"
-                class="size-[clamp(2.25rem,2.2vw,2.75rem)] shrink-0 object-contain"
+                class="size-8 shrink-0 object-contain md:size-[clamp(2.25rem,2.2vw,2.75rem)]"
                 aria-hidden="true"
               />
             </div>
-            <p class="text-[clamp(1rem,1vw+0.5rem,1.25rem)] font-semibold leading-[1.1] text-brand">{stat.label}</p>
-            <p class="text-small leading-[1.1] text-negro/95">{stat.description}</p>
-            <p class:list={["mt-auto text-[12px] leading-[1.1]", sourceTones[stat.tone]]}>
+            <p class="text-small font-semibold leading-snug text-brand sm:text-[clamp(1rem,1vw+0.5rem,1.25rem)] sm:leading-[1.1]">
+              {stat.label}
+            </p>
+            <p class="text-small leading-snug text-negro/95">
+              {stat.description}
+            </p>
+            <p class:list={["mt-auto text-caption leading-snug", sourceTones[stat.tone]]}>
               {stat.source}
             </p>
           </li>

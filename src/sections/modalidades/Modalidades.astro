@@ -38,11 +38,11 @@ const { eyebrow, title, subtitle, items, formRail = false } = Astro.props as Pro
               data-card-media
             />
             <div class="relative z-10 flex flex-col gap-2.5 bg-white p-3">
-              <span class="inline-flex w-fit items-center justify-center rounded-md bg-brand px-4 py-2.5 text-[12px] font-bold uppercase text-white">
+              <span class="inline-flex w-fit items-center justify-center rounded-md bg-brand px-4 py-2.5 text-caption font-bold uppercase text-white">
                 {item.name}
               </span>
               <p class="text-[18px] font-bold leading-normal text-negro">{item.description}</p>
-              <p class="text-[12px] font-bold leading-[1.55] text-brand">{item.schedule}</p>
+              <p class="text-small font-bold leading-[1.55] text-brand">{item.schedule}</p>
             </div>
           </li>
         ))
