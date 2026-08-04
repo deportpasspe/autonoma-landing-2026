@@ -13,6 +13,7 @@ const careers = [
   "Obstetricia",
   "Derecho",
   "Ingeniería de Sistemas",
+  "Ingeniería Mecatrónica",
   "Arquitectura",
 ];
 
@@ -166,6 +167,7 @@ export const homePage: Page = {
             "Ingeniería de Sistemas",
             "Ingeniería Industrial",
             "Ingeniería de Software",
+            "Ingeniería Mecatrónica",
           ],
         },
       ],
