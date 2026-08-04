@@ -20,43 +20,42 @@
   --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", system-ui, sans-serif;
   --font-sans: "Bricolage Grotesque Variable", "Bricolage Grotesque", system-ui, sans-serif;
 
-  --text-hero: clamp(2.75rem, 7vw, 5.5rem);
-  --text-section: clamp(1.75rem, 3.2vw + 0.5rem, 3.25rem);
-  --text-display: clamp(2rem, 5vw, 4rem);
-  --text-h2: clamp(1.5rem, 2.5vw + 0.5rem, 2.75rem);
-  --text-h3: clamp(1.125rem, 1.5vw + 0.5rem, 1.75rem);
-  --text-stat: clamp(2rem, 2vw + 1rem, 2.75rem);
+  --text-hero: clamp(2.75rem, 7vw, 4.5rem);
+  --text-section: clamp(1.75rem, 3.2vw + 0.5rem, 2.75rem);
+  --text-display: clamp(2rem, 5vw, 3.5rem);
+  --text-h2: clamp(1.5rem, 2.5vw + 0.5rem, 2.5rem);
+  --text-h3: clamp(1.125rem, 1.5vw + 0.5rem, 1.5rem);
+  --text-stat: clamp(2rem, 2vw + 1rem, 2.5rem);
   /* Mobile-readable floors: body ≥16px, secondary ≥14px, caption ≥12px */
   --text-body: 1rem;
   --text-small: 0.875rem;
   --text-caption: 0.75rem;
-  --text-eyebrow: clamp(1.25rem, 1.2vw + 0.5rem, 1.75rem);
+  --text-eyebrow: clamp(1.25rem, 1.2vw + 0.5rem, 1.5rem);
 
   --leading-display: 1.1;
   --leading-heading: 1.1;
   --leading-normal: 1.45;
 
-  --space-section-y: clamp(3.5rem, 5vw + 1rem, 7.5rem);
-  /* Side inset scales with viewport; keeps breathing room without boxing content */
-  --space-section-x: clamp(1.25rem, 3.2vw, 6rem);
+  --space-section-y: clamp(3.5rem, 5vw + 1rem, 5.5rem);
+  /* Side inset scales up to ~1440; wider viewports keep the same inset */
+  --space-section-x: clamp(1.25rem, 3.2vw, 4rem);
   --space-gap: 1rem;
   --space-gap-lg: 1.5rem;
   --space-stack: 2.5rem;
 
   /*
-    Figma artboard is 1440. On wider screens the shell tracks the viewport
-    (minus only the side inset) so content doesn't sit in a tiny centered rail.
+    Figma artboard is 1440. Cap the shell there so ultrawide screens only
+    grow side margins; content stays centered at design scale.
   */
-  --page-max: min(120rem, 100%);
+  --page-max: min(90rem, 100%);
   --content-narrow: 54rem;
-  --content-lead: clamp(53.5rem, 58vw, 72rem);
-  --content-media: clamp(49.375rem, 54vw, 66rem);
-  --hero-media: clamp(56rem, 62vw, 78rem);
+  --content-lead: clamp(40rem, 58vw, 54rem);
+  --content-media: clamp(36rem, 54vw, 50rem);
+  --hero-media: clamp(40rem, 62vw, 56rem);
   --grid-gap: 1rem;
-  /* Form grows from ~1280; preferred vw stayed below min until ~1750 before */
-  --form-rail: clamp(26.25rem, 24vw, 30rem);
-  --form-rail-gap: clamp(1.5rem, 1.5vw, 2.5rem);
-  --form-card: clamp(25.25rem, 23vw, 28.75rem);
+  --form-rail: clamp(26.25rem, 24vw, 28rem);
+  --form-rail-gap: clamp(1.5rem, 1.5vw, 2rem);
+  --form-card: clamp(25.25rem, 23vw, 27rem);
 
   --radius-card: 1rem;
   --radius-input: 0.75rem;
@@ -251,41 +250,29 @@
 
 @media (min-width: 1280px) {
   :root {
-    --form-rail: clamp(28rem, 22vw + 6rem, 32rem);
-    --form-card: clamp(27rem, 21vw + 6rem, 30.5rem);
-    --content-lead: clamp(56rem, 60vw, 78rem);
-    --content-media: clamp(52rem, 56vw, 72rem);
-    --hero-media: clamp(58rem, 64vw, 82rem);
+    /* Nudge form rail toward Figma 1440 sizes; do not grow past them */
+    --form-rail: clamp(26.25rem, 22vw, 28rem);
+    --form-card: clamp(25.25rem, 21vw, 27rem);
+    --content-lead: clamp(48rem, 55vw, 54rem);
+    --content-media: clamp(44rem, 52vw, 50rem);
+    --hero-media: clamp(48rem, 58vw, 56rem);
   }
 }
 
 @media (min-width: 1440px) {
   :root {
+    /* Lock to Figma artboard scale — no further growth on wider screens */
     --text-body: 1.0625rem;
     --text-small: 0.9375rem;
-    --text-section: clamp(2.625rem, 2vw + 1rem, 3.5rem);
-    --text-eyebrow: clamp(1.5rem, 0.8vw + 0.75rem, 1.875rem);
-    --form-rail: clamp(30rem, 24vw + 4rem, 34rem);
-    --form-card: clamp(28.75rem, 23vw + 4rem, 32.5rem);
-    --form-rail-gap: clamp(1.75rem, 1.4vw, 2.5rem);
-    --content-lead: clamp(58rem, 64vw, 88rem);
-    --content-media: clamp(54rem, 60vw, 82rem);
-    --hero-media: clamp(60rem, 68vw, 92rem);
-  }
-}
-
-@media (min-width: 1920px) {
-  :root {
-    --page-max: min(130rem, 100%);
-    /* Fill form-rail-content; avoid left-clustered band beside the sticky form */
-    --content-lead: min(96rem, 100%);
-    --content-media: min(90rem, 100%);
-    --hero-media: min(96rem, 100%);
-    --form-rail: 36rem;
-    --form-card: 34rem;
-    --form-rail-gap: 2.75rem;
-    --space-section-y: clamp(6rem, 4.5vw, 9rem);
-    --space-section-x: clamp(4.5rem, 3.5vw, 7rem);
-    --text-section: clamp(3rem, 1.8vw + 1rem, 3.75rem);
+    --text-section: 2.75rem;
+    --text-eyebrow: 1.5rem;
+    --form-rail: 28rem;
+    --form-card: 27rem;
+    --form-rail-gap: 2rem;
+    --content-lead: 54rem;
+    --content-media: 50rem;
+    --hero-media: 56rem;
+    --space-section-y: 5.5rem;
+    --space-section-x: 4rem;
   }
 }
