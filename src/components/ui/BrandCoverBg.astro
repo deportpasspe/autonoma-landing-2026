@@ -1,0 +1,23 @@
+---
+interface Props {
+  /** Use eager only for above-the-fold hero. */
+  eager?: boolean;
+}
+
+const { eager = false } = Astro.props as Props;
+---
+
+<picture class="pointer-events-none absolute inset-0 z-0 block size-full" aria-hidden="true">
+  <source srcset="/assets/figma/hero/hero-cover.avif" type="image/avif" />
+  <img
+    src="/assets/figma/hero/hero-cover.webp"
+    alt=""
+    class="size-full object-cover object-center"
+    width="1024"
+    height="496"
+    loading={eager ? "eager" : "lazy"}
+    decoding="async"
+    fetchpriority={eager ? "high" : undefined}
+    aria-hidden="true"
+  />
+</picture>

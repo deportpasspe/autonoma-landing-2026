@@ -1,5 +1,6 @@
 ---
 import type { ResultadosSection } from "../../lib/cms/types";
+import BrandCoverBg from "../../components/ui/BrandCoverBg.astro";
 import Container from "../../components/ui/Container.astro";
 import Section from "../../components/ui/Section.astro";
 import Tag from "../../components/ui/Tag.astro";
@@ -25,8 +26,9 @@ const sourceTones = {
 };
 ---
 
-<Section id="cifras" tone="brand" ariaLabelledby="cifras-title" formRail={formRail}>
-  <Container formRail={formRail}>
+<Section id="cifras" tone="brand" ariaLabelledby="cifras-title" formRail={formRail} class="relative overflow-hidden">
+  <BrandCoverBg />
+  <Container formRail={formRail} class="relative z-10">
     <div class="mb-5 max-w-[min(100%,clamp(37.5rem,36vw,45rem))] md:mb-8" data-reveal>
       <Tag class="!text-white">{eyebrow}</Tag>
       <h2 id="cifras-title" class="mt-2.5 text-section-title text-white">{title}</h2>

@@ -33,11 +33,19 @@ const tones: Record<Tone, string> = {
   white: "bg-white text-negro",
   none: "",
 };
+
+const coloredTones = new Set<Tone>(["brand", "lavender", "yellow", "sky"]);
+const withNoise = coloredTones.has(tone);
 ---
 
 <section
   id={id}
-  class:list={["py-[var(--space-section-y)]", tones[tone], className]}
+  class:list={[
+    "py-[var(--space-section-y)]",
+    tones[tone],
+    withNoise && "section-noise relative overflow-hidden",
+    className,
+  ]}
   aria-labelledby={ariaLabelledby}
 >
   <slot />
