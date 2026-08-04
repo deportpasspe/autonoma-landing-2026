@@ -48,7 +48,7 @@ export const homePage: Page = {
   slug: "home",
   title: "Universidad Autónoma del Perú — Aquí no somos hijitos de papá",
   description:
-    "Una universidad para los que se la ganan solos. 26 carreras, 3 modalidades y dos campus en Lima. Regístrate y recibe más información.",
+    "Una universidad para los que se la ganan solos. 27 carreras, 3 modalidades y dos campus en Lima. Regístrate y recibe más información.",
   sections: [
     {
       _type: "hero",
@@ -120,7 +120,7 @@ export const homePage: Page = {
       _type: "carreras",
       eyebrow: "Este es el comienzo",
       title: "de algo grande",
-      subtitle: "26 carreras para quienes saben exactamente lo que quieren",
+      subtitle: "27 carreras para quienes saben exactamente lo que quieren",
       groups: [
         {
           name: "Facultad de Educación",
@@ -216,7 +216,7 @@ export const homePage: Page = {
           title: "Flexibilidad",
           lead: "Tu carrera se adapta a tu vida",
           description:
-            "Elige entre 26 carreras profesionales. Tú decides cómo y cuándo avanzar.",
+            "Elige entre 27 carreras profesionales. Tú decides cómo y cuándo avanzar.",
           tone: "mint",
           iconSrc: "/assets/figma/icons/map.svg",
         },
