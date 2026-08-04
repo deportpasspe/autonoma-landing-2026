@@ -6,7 +6,8 @@ import Resultados from "./resultados/Resultados.astro";
 import Carreras from "./carreras/Carreras.astro";
 import Modalidades from "./modalidades/Modalidades.astro";
 import PropioCamino from "./propio-camino/PropioCamino.astro";
-import Testimonios from "./testimonios/Testimonios.astro";
+// Temporarily hidden — re-enable by uncommenting:
+// import Testimonios from "./testimonios/Testimonios.astro";
 import Campus from "./campus/Campus.astro";
 
 interface Props {
@@ -33,7 +34,8 @@ const { sections, formRail = false } = Astro.props as Props;
       case "propioCamino":
         return <PropioCamino {...block} formRail={formRail} />;
       case "testimonios":
-        return <Testimonios {...block} formRail={formRail} />;
+        // Temporarily hidden — re-enable: return <Testimonios {...block} formRail={formRail} />;
+        return null;
       case "campus":
         return <Campus {...block} />;
       default:

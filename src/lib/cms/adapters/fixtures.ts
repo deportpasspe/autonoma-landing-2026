@@ -22,7 +22,8 @@ export const settings: SiteSettings = {
     { label: "Cifras", href: "#cifras" },
     { label: "Carreras", href: "#carreras" },
     { label: "Modalidades", href: "#modalidades" },
-    { label: "Testimonios", href: "#testimonios" },
+    // Temporarily hidden with section — re-enable with SectionBuilder testimonios case:
+    // { label: "Testimonios", href: "#testimonios" },
     { label: "Campus", href: "#campus" },
   ],
   footer: {

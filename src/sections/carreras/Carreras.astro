@@ -13,10 +13,10 @@ const { eyebrow, title, subtitle, groups, formRail = false } = Astro.props as Pr
 
 <Section id="carreras" tone="yellow" ariaLabelledby="carreras-title" formRail={formRail}>
   <Container formRail={formRail}>
-    <div class="mb-10 max-w-3xl" data-reveal>
+    <div class="mb-10 max-w-3xl lg:max-w-none" data-reveal>
       <Tag>{eyebrow}</Tag>
       <h2 id="carreras-title" class="mt-3 text-section-title text-brand">{title}</h2>
-      <p class="mt-4 text-[clamp(1.125rem,1.2vw+0.5rem,1.75rem)] font-semibold leading-normal text-brand">
+      <p class="mt-4 text-[clamp(1.125rem,1.2vw+0.5rem,1.75rem)] font-semibold leading-normal text-brand lg:whitespace-nowrap">
         {subtitle}
       </p>
     </div>
@@ -45,16 +45,24 @@ const { eyebrow, title, subtitle, groups, formRail = false } = Astro.props as Pr
               >
                 <span class="inline-flex items-center gap-2.5">
                   <span data-accordion-label>{group.name}</span>
-                  <span
+                  <svg
+                    width="15"
+                    height="26"
+                    viewBox="0 0 15.2041 25.8538"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
                     class:list={[
-                      "hidden text-[12px] leading-none opacity-80 sm:inline",
+                      "h-[1.15em] w-auto shrink-0",
                       open ? "text-white" : "text-brand",
                     ]}
                     aria-hidden="true"
                     data-accordion-brace
                   >
-                    {"{"}
-                  </span>
+                    <path
+                      d="M14.7521 23.1349C15.1699 24.4841 14.1563 25.8538 12.7454 25.8538H7.97873L5.42417 17.5669C4.80094 15.5397 5.82824 13.4919 7.5952 12.6769L7.45823 12.2386C5.12967 11.903 3.1641 10.2525 2.45868 7.95818L0 0H5.7666C6.86239 0 7.83491 0.712264 8.1568 1.76696L10.0676 7.95818C10.773 10.2525 12.7454 11.903 15.0671 12.2386L15.2041 12.6769C13.4371 13.4988 12.403 15.5465 13.0331 17.5669L14.7521 23.1349Z"
+                      fill="currentColor"
+                    ></path>
+                  </svg>
                 </span>
                 <svg
                   class:list={[
@@ -83,13 +91,13 @@ const { eyebrow, title, subtitle, groups, formRail = false } = Astro.props as Pr
                       {
                         (group.items ?? []).map((item) => (
                           <li>
-                            <button
-                              type="button"
-                              class="flex w-full items-center gap-3 rounded-lg px-1 py-2 text-left text-[16px] text-negro transition-colors duration-200 hover:text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                            <a
+                              href="#inicio"
+                              class="flex w-full items-center gap-3 rounded-lg px-1 py-2 text-left text-[16px] text-negro no-underline transition-colors duration-200 hover:text-brand hover:underline hover:decoration-brand hover:underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                             >
                               <span class="size-1.5 shrink-0 rounded-full bg-current" aria-hidden="true"></span>
                               <span>{item}</span>
-                            </button>
+                            </a>
                           </li>
                         ))
                       }
@@ -120,7 +128,7 @@ const { eyebrow, title, subtitle, groups, formRail = false } = Astro.props as Pr
     const trigger = item.querySelector<HTMLButtonElement>("[data-accordion-trigger]");
     const panel = item.querySelector<HTMLElement>("[data-accordion-panel]");
     const icon = item.querySelector<SVGElement>("[data-accordion-icon]");
-    const brace = item.querySelector<HTMLElement>("[data-accordion-brace]");
+    const brace = item.querySelector<SVGElement>("[data-accordion-brace]");
     if (!trigger || !panel) return;
 
     item.dataset.open = open ? "true" : "false";

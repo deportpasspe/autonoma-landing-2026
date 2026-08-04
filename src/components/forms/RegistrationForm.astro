@@ -47,18 +47,17 @@ const inputFieldClass =
     <p class="mt-1 text-base font-normal leading-normal text-brand sm:text-[clamp(1rem,3.2vw,1.125rem)]">{formSubtitle}</p>
   </div>
 
-  <fieldset class="grid grid-cols-3 gap-2 px-4 md:flex md:flex-wrap md:items-center md:gap-x-2.5 md:gap-y-2 md:px-6 md:pt-2">
+  <fieldset class="grid grid-cols-3 gap-2 px-4 sm:px-6 md:pt-2">
     <legend class="sr-only">Modalidad</legend>
     {
       modalities.map((modality, index) => (
         <label
           class:list={[
-            "group relative flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border px-1 py-2.5 text-center transition-[border-color,background-color,color,box-shadow] duration-200",
+            "group relative flex min-h-11 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border px-1.5 py-2.5 text-center transition-[border-color,background-color,color,box-shadow] duration-200",
             "border-[#d4d4d4] bg-[#fafafa] text-negro",
             "hover:border-brand/50 hover:bg-brand/5",
             "has-[:checked]:border-brand has-[:checked]:bg-brand/10 has-[:checked]:text-brand has-[:checked]:shadow-[0_0_0_1px_rgba(255,102,0,0.35)]",
-            "md:min-h-11 md:flex-row md:justify-start md:gap-2 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:py-0 md:text-left md:shadow-none",
-            "md:has-[:checked]:bg-transparent md:has-[:checked]:shadow-none md:hover:bg-transparent",
+            "has-[:focus-visible]:border-brand has-[:focus-visible]:shadow-[0_0_0_3px_rgba(255,102,0,0.15)]",
           ]}
         >
           <input
@@ -67,9 +66,9 @@ const inputFieldClass =
             value={modality}
             required
             checked={index === 1}
-            class="size-[18px] shrink-0 accent-brand transition-transform duration-150 checked:scale-110"
+            class="size-[18px] shrink-0 accent-brand transition-transform duration-150 checked:scale-110 focus-visible:outline-none"
           />
-          <span class="text-caption font-semibold leading-snug md:text-small md:font-medium">
+          <span class="text-small font-semibold leading-snug">
             {modality}
           </span>
         </label>
