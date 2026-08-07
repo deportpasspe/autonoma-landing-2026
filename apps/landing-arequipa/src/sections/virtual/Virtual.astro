@@ -277,7 +277,7 @@ const { virtual } = Astro.props as Props;
     root.addEventListener("mouseleave", () => setPaused(false));
     root.addEventListener("focusin", () => setPaused(true));
     root.addEventListener("focusout", (event) => {
-      const next = event.relatedTarget;
+      const next = (event as FocusEvent).relatedTarget;
       if (next instanceof Node && root.contains(next)) return;
       setPaused(false);
     });
