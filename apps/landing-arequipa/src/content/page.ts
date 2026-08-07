@@ -308,7 +308,7 @@ export const page: PageContent = {
     ],
   },
   espacios: {
-    title: "Conoce nuestros espacios",
+    title: "Sé parte de la Autónoma y accede a estos espacios",
     highlights: [
       "4 salas de coworking + 1 sala gerencial",
       "Wi-Fi de alta velocidad",
@@ -319,13 +319,6 @@ export const page: PageContent = {
     panelIntro: "Selecciona el ambiente que mejor se adapte a tus necesidades.",
     items: [
       {
-        id: "overview",
-        title: "Conoce nuestros espacios",
-        body: "Descubre el espacio ideal para estudiar, trabajar o reunirte.",
-        imageSrc: "/assets/figma/arequipa/espacios/overview.webp",
-        imageAlt: "Área de atención y espacios de la oficina Autónoma Virtual en Arequipa",
-      },
-      {
         id: "gerencial",
         title: "Sala Gerencial",
         body: "Espacio privado para reuniones y asesorías.",
@@ -335,7 +328,7 @@ export const page: PageContent = {
       {
         id: "coworking",
         title: "Salas de Coworking",
-        body: "4 salas para estudiar, trabajar o reunirte con comodidad.",
+        body: "Ambientes equipados para trabajar, estudiar o colaborar.",
         imageSrc: "/assets/figma/arequipa/espacios/coworking.webp",
         imageAlt: "Sala de coworking con mesas de estudio y café en la oficina Autónoma Virtual",
       },
