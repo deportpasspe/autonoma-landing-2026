@@ -4,6 +4,7 @@ import type { SiteSettings } from "../content/site";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
 import LeadForm from "../components/forms/LeadForm.astro";
+import WhatsAppFab from "../components/ui/WhatsAppFab.astro";
 import ModalPregrado from "../components/modals/ModalPregrado.astro";
 import ModalPosgrado from "../components/modals/ModalPosgrado.astro";
 import ModalController from "../components/modals/ModalController.astro";
@@ -47,6 +48,7 @@ const { page, settings } = Astro.props as Props;
   <Faq faq={page.faq} />
 </main>
 <Footer settings={settings} />
+<WhatsAppFab href={settings.whatsappHref} />
 
 <ModalPregrado categories={page.pregradoCategories} />
 <ModalPosgrado tabs={page.posgradoTabs} />
