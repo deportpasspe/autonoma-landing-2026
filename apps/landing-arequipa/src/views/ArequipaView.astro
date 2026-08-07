@@ -14,9 +14,7 @@ import Virtual from "../sections/virtual/Virtual.astro";
 import Espacios from "../sections/espacios/Espacios.astro";
 import Aliados from "../sections/aliados/Aliados.astro";
 import Contacto from "../sections/contacto/Contacto.astro";
-import Testimonios from "../sections/testimonios/Testimonios.astro";
 import Faq from "../sections/faq/Faq.astro";
-import Blog from "../sections/blog/Blog.astro";
 
 interface Props {
   page: PageContent;
@@ -46,9 +44,7 @@ const { page, settings } = Astro.props as Props;
   <Espacios espacios={page.espacios} />
   <Aliados aliados={page.aliados} />
   <Contacto contacto={page.contacto} />
-  <Testimonios testimonios={page.testimonios} />
   <Faq faq={page.faq} />
-  <Blog blog={page.blog} />
 </main>
 <Footer settings={settings} />
 

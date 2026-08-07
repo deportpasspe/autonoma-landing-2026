@@ -31,3 +31,4 @@ tmp/
 
 # Figma source dumps (prepared assets live under arequipa/)
 apps/landing-arequipa/public/assets/figma/img_autonoma landing_Arequipa/
+.env*.local

@@ -9,6 +9,9 @@
   --duration-field: 200ms;
   /* Faq.astro espera este valor antes de aplicar `hidden` al cerrar. */
   --duration-faq: 320ms;
+  /* ModalController.astro: entrada/salida del dialog (opacity + lift). */
+  --duration-modal: 320ms;
+  --ease-modal: cubic-bezier(0.22, 1, 0.36, 1);
   /* Reveal editorial (Anthem-adaptado): un poco más de travel que el DS base. */
   --reveal-travel: 1.75rem;
   /* Naranja de marca vivo (design system). Contraste AA en texto chico:
@@ -588,5 +591,50 @@
   [data-header].is-nav-open [data-mobile-nav-toggle] {
     border-color: var(--color-border, #e5e5e5);
     color: var(--color-negro, #121212);
+  }
+}
+
+/*
+  Modales Pregrado/Posgrado — entrada/salida suave.
+  ModalController añade `.is-open` tras showModal() y lo quita antes de close().
+*/
+dialog[data-modal] {
+  opacity: 0;
+  transform: translateY(0.75rem) scale(0.985);
+  transition:
+    opacity var(--duration-modal) var(--ease-modal),
+    transform var(--duration-modal) var(--ease-modal),
+    overlay var(--duration-modal) var(--ease-modal) allow-discrete,
+    display var(--duration-modal) var(--ease-modal) allow-discrete;
+}
+
+dialog[data-modal][open].is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+dialog[data-modal]::backdrop {
+  background-color: rgb(18 18 18 / 0.5);
+  opacity: 0;
+  transition: opacity var(--duration-modal) var(--ease-modal);
+}
+
+dialog[data-modal][open].is-open::backdrop {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog[data-modal],
+  dialog[data-modal]::backdrop {
+    transition: none;
+    transform: none;
+  }
+
+  dialog[data-modal][open] {
+    opacity: 1;
+  }
+
+  dialog[data-modal][open]::backdrop {
+    opacity: 1;
   }
 }

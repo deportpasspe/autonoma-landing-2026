@@ -1,24 +1,73 @@
 ---
 /**
  * Shared modal open/close wiring for header mega-menu and oferta cards.
+ * Enter/exit: opacity + soft lift (class `is-open`); respects reduced motion.
  */
 ---
 
 <script>
+  const OPEN_CLASS = "is-open";
+  const CLOSING_ATTR = "data-closing";
+  const DURATION_MS = 320;
+
+  function prefersReducedMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
   function getModal(id: string): HTMLDialogElement | null {
     return document.querySelector<HTMLDialogElement>(`[data-modal="${id}"]`);
   }
 
   function openModal(id: string) {
     const dialog = getModal(id);
-    if (!dialog) return;
+    if (!dialog || dialog.open) return;
+
     if (typeof dialog.showModal === "function") dialog.showModal();
     else dialog.setAttribute("open", "");
+
+    if (prefersReducedMotion()) {
+      dialog.classList.add(OPEN_CLASS);
+      return;
+    }
+
+    dialog.classList.remove(OPEN_CLASS);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        dialog.classList.add(OPEN_CLASS);
+      });
+    });
   }
 
   function closeModal(dialog: HTMLDialogElement) {
-    if (typeof dialog.close === "function") dialog.close();
-    else dialog.removeAttribute("open");
+    if (!dialog.open || dialog.getAttribute(CLOSING_ATTR) === "true") return;
+
+    if (prefersReducedMotion() || !dialog.classList.contains(OPEN_CLASS)) {
+      dialog.classList.remove(OPEN_CLASS);
+      if (typeof dialog.close === "function") dialog.close();
+      else dialog.removeAttribute("open");
+      return;
+    }
+
+    dialog.setAttribute(CLOSING_ATTR, "true");
+    dialog.classList.remove(OPEN_CLASS);
+
+    let settled = false;
+    const settle = () => {
+      if (settled) return;
+      settled = true;
+      dialog.removeAttribute(CLOSING_ATTR);
+      if (typeof dialog.close === "function") dialog.close();
+      else dialog.removeAttribute("open");
+    };
+
+    const onEnd = (event: TransitionEvent) => {
+      if (event.target !== dialog || event.propertyName !== "opacity") return;
+      dialog.removeEventListener("transitionend", onEnd);
+      settle();
+    };
+
+    dialog.addEventListener("transitionend", onEnd);
+    window.setTimeout(settle, DURATION_MS + 80);
   }
 
   document.addEventListener("open-modal", ((event: CustomEvent<{ id: string }>) => {
@@ -36,11 +85,19 @@
 
   document.querySelectorAll("dialog[data-modal]").forEach((dialog) => {
     if (!(dialog instanceof HTMLDialogElement)) return;
+
     dialog.querySelectorAll("[data-modal-close]").forEach((btn) => {
       btn.addEventListener("click", () => closeModal(dialog));
     });
+
     dialog.addEventListener("click", (event) => {
       if (event.target === dialog) closeModal(dialog);
+    });
+
+    /* Escape: animate out instead of hard close */
+    dialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      closeModal(dialog);
     });
   });
 </script>
