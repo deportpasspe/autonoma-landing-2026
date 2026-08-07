@@ -323,6 +323,40 @@
     opacity: 1;
   }
 
+  .virtual-acc-item {
+    position: relative;
+  }
+
+  .virtual-acc-progress {
+    position: relative;
+    height: 2px;
+    overflow: hidden;
+    background-color: color-mix(in srgb, var(--color-brand, #f60) 30%, transparent);
+  }
+
+  .virtual-acc-progress__bar {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background-color: var(--color-brand, #f60);
+    will-change: transform;
+  }
+
+  .virtual-acc-item[data-active="true"] .virtual-acc-progress__bar {
+    animation: virtual-acc-progress var(--virtual-acc-autoplay, 5.5s) linear forwards;
+  }
+
+  @keyframes virtual-acc-progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
   .virtual-acc-panel {
     display: grid;
     grid-template-rows: 1fr;
@@ -457,6 +491,11 @@
     .virtual-acc-trigger [data-accordion-icon-plus],
     .virtual-acc-trigger [data-accordion-icon-minus] {
       transition: none;
+    }
+
+    .virtual-acc-item[data-active="true"] .virtual-acc-progress__bar {
+      animation: none;
+      transform: scaleX(1);
     }
   }
 }

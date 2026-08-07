@@ -90,13 +90,22 @@ const { virtual } = Astro.props as Props;
         />
       </div>
 
-      {/* Right: benefits accordion */}
-      <div class="order-2 self-center lg:order-none lg:self-center" data-accordion="virtual">
+      {/* Right: benefits accordion (autoplay + progress) */}
+      <div
+        class="order-2 self-center lg:order-none lg:self-center"
+        data-accordion="virtual"
+        data-virtual-autoplay
+        style="--virtual-acc-autoplay: 5.5s"
+      >
         {
           virtual.items.map((item, index) => {
             const open = index === 0;
             return (
-              <div class="border-b-2 border-brand/35" data-accordion-item>
+              <div
+                class="virtual-acc-item"
+                data-accordion-item
+                data-active={open ? "true" : "false"}
+              >
                 <h3>
                   <button
                     type="button"
@@ -127,6 +136,9 @@ const { virtual } = Astro.props as Props;
                     <p class="pb-4 text-[1rem] font-normal leading-normal text-negro">{item.body}</p>
                   </div>
                 </div>
+                <div class="virtual-acc-progress" aria-hidden="true">
+                  <span class="virtual-acc-progress__bar" data-progress-bar />
+                </div>
               </div>
             );
           })
@@ -151,6 +163,20 @@ const { virtual } = Astro.props as Props;
 
     const items = Array.from(root.querySelectorAll<HTMLElement>("[data-accordion-item]"));
     const timers = new WeakMap<HTMLElement, number>();
+    let activeIndex = Math.max(
+      0,
+      items.findIndex((item) => item.dataset.active === "true"),
+    );
+    let inView = false;
+    let paused = false;
+    let reducedAutoTimer: number | null = null;
+
+    const clearReducedAuto = () => {
+      if (reducedAutoTimer != null) {
+        window.clearTimeout(reducedAutoTimer);
+        reducedAutoTimer = null;
+      }
+    };
 
     const setOpen = (item: HTMLElement, open: boolean) => {
       const trigger = item.querySelector<HTMLButtonElement>("[data-accordion-trigger]");
@@ -160,6 +186,7 @@ const { virtual } = Astro.props as Props;
       const prev = timers.get(panel);
       if (prev) window.clearTimeout(prev);
 
+      item.dataset.active = open ? "true" : "false";
       trigger.setAttribute("aria-expanded", String(open));
       trigger.classList.toggle("font-bold", open);
       trigger.classList.toggle("font-normal", !open);
@@ -190,14 +217,100 @@ const { virtual } = Astro.props as Props;
       timers.set(panel, id);
     };
 
-    items.forEach((item) => {
+    const goTo = (index: number) => {
+      activeIndex = ((index % items.length) + items.length) % items.length;
+      items.forEach((item, i) => setOpen(item, i === activeIndex));
+      kickProgress();
+    };
+
+    const kickProgress = () => {
+      const active = items[activeIndex];
+      if (!active) return;
+      const bar = active.querySelector<HTMLElement>("[data-progress-bar]");
+      if (!bar || prefersReduced) return;
+
+      bar.style.animation = "none";
+      void bar.offsetWidth;
+      bar.style.removeProperty("animation");
+      bar.style.animationPlayState = paused || !inView ? "paused" : "running";
+    };
+
+    const scheduleReduced = () => {
+      clearReducedAuto();
+      if (!prefersReduced || !inView || paused || items.length < 2) return;
+      reducedAutoTimer = window.setTimeout(() => {
+        goTo(activeIndex + 1);
+        scheduleReduced();
+      }, 5500);
+    };
+
+    items.forEach((item, index) => {
       const trigger = item.querySelector<HTMLButtonElement>("[data-accordion-trigger]");
+      const bar = item.querySelector<HTMLElement>("[data-progress-bar]");
       if (!trigger) return;
 
       trigger.addEventListener("click", () => {
-        const willOpen = trigger.getAttribute("aria-expanded") !== "true";
-        items.forEach((other) => setOpen(other, willOpen && other === item));
+        goTo(index);
+        scheduleReduced();
+      });
+
+      bar?.addEventListener("animationend", (event) => {
+        if (event.target !== bar) return;
+        if (item.dataset.active !== "true") return;
+        if (paused || !inView || prefersReduced) return;
+        goTo(activeIndex + 1);
       });
     });
+
+    const setPaused = (value: boolean) => {
+      paused = value;
+      const active = items[activeIndex];
+      const bar = active?.querySelector<HTMLElement>("[data-progress-bar]");
+      if (bar && !prefersReduced) {
+        bar.style.animationPlayState = value || !inView ? "paused" : "running";
+      }
+      if (paused) clearReducedAuto();
+      else scheduleReduced();
+    };
+
+    root.addEventListener("mouseenter", () => setPaused(true));
+    root.addEventListener("mouseleave", () => setPaused(false));
+    root.addEventListener("focusin", () => setPaused(true));
+    root.addEventListener("focusout", (event) => {
+      const next = event.relatedTarget;
+      if (next instanceof Node && root.contains(next)) return;
+      setPaused(false);
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) setPaused(true);
+      else if (inView) setPaused(false);
+    });
+
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          inView = Boolean(entry?.isIntersecting);
+          if (inView) {
+            kickProgress();
+            scheduleReduced();
+          } else {
+            clearReducedAuto();
+            const active = items[activeIndex];
+            const bar = active?.querySelector<HTMLElement>("[data-progress-bar]");
+            if (bar) bar.style.animationPlayState = "paused";
+          }
+        },
+        { threshold: 0.35 },
+      );
+      io.observe(root);
+    } else {
+      inView = true;
+      kickProgress();
+      scheduleReduced();
+    }
+
+    kickProgress();
   });
 </script>
