@@ -29,12 +29,12 @@ const { oferta } = Astro.props as Props;
       </p>
     </div>
 
-    <div class="oferta-cards mx-auto mt-10 grid max-w-[1120px] gap-4 lg:grid-cols-2" data-reveal-stagger>
+    <div class="oferta-cards mt-10 grid gap-4 lg:grid-cols-2 lg:gap-6" data-reveal-stagger>
       {
         oferta.cards.map((card) => (
           <button
             type="button"
-            class="oferta-card group relative flex min-h-[368px] flex-col justify-end overflow-hidden rounded-[var(--radius-card)] bg-[#a28961] p-8 text-left focus-visible:outline-none"
+            class="oferta-card group relative flex min-h-[368px] flex-col justify-end overflow-hidden rounded-[var(--radius-card)] bg-[#a28961] p-8 text-left focus-visible:outline-none lg:min-h-[440px] lg:p-10"
             data-reveal-item
             data-open-modal={card.href.includes("posgrado") ? "posgrado" : "pregrado"}
           >
@@ -42,8 +42,8 @@ const { oferta } = Astro.props as Props;
               src={card.imageSrc}
               alt=""
               class="oferta-card__media absolute inset-0 size-full object-cover transition-[opacity,transform] duration-500 ease-out"
-              width="551"
-              height="368"
+              width="640"
+              height="440"
               loading="lazy"
             />
             <div
@@ -60,7 +60,7 @@ const { oferta } = Astro.props as Props;
 
             <div class="relative">
               <h3 class="text-[clamp(1.5rem,2.2vw,1.75rem)] font-bold leading-tight">{card.title}</h3>
-              <p class="mt-1 max-w-[364px] text-body font-light leading-snug">{card.description}</p>
+              <p class="mt-1 max-w-[28rem] text-body font-light leading-snug">{card.description}</p>
             </div>
 
             {/* Painted last so it sits above the image instead of being covered by it. */}
