@@ -6,7 +6,6 @@ interface Props {
   title: string;
   submitLabel: string;
   levels: { id: "pregrado" | "posgrado"; label: string }[];
-  campuses: string[];
   pregradoCategories: ProgramCategory[];
   posgradoTabs: PosgradoTab[];
   class?: string;
@@ -16,7 +15,6 @@ const {
   title,
   submitLabel,
   levels,
-  campuses,
   pregradoCategories,
   posgradoTabs,
   class: className = "",
@@ -142,22 +140,6 @@ const chevronClass =
               }
             </select>
             <span class={floatLabelClass} aria-hidden="true">Escoge una especialidad</span>
-            <svg class={chevronClass} viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <div class="field-step" data-step="campus">
-        <div class="field-step-inner">
-          <div class="relative mt-3">
-            <label class="sr-only" for="campus">Escoge tu campus</label>
-            <select id="campus" name="campus" class={selectClass} data-filled="false" data-cascade="campus">
-              <option value="" selected>Escoge tu campus</option>
-              {campuses.map((campus) => <option value={campus}>{campus}</option>)}
-            </select>
-            <span class={floatLabelClass} aria-hidden="true">Escoge tu campus</span>
             <svg class={chevronClass} viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
             </svg>
@@ -306,11 +288,9 @@ const chevronClass =
 
     function render(animate: boolean) {
       const level = programa!.value;
-      const hasLevel = level !== "";
 
       showStep("carrera", level === "pregrado", animate);
       showStep("categoria", level === "posgrado", animate);
-      showStep("campus", hasLevel, animate);
 
       const hasCategory = level === "posgrado" && categoria!.value !== "";
       if (hasCategory) filterSpecialties(categoria!.value);

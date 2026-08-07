@@ -91,7 +91,6 @@ export interface PageContent {
     submitLabel: string;
     /** First step of the cascade: picking one of these reveals the rest of the fields. */
     levels: { id: "pregrado" | "posgrado"; label: string }[];
-    campuses: string[];
   };
   oferta: {
     title: string;
@@ -187,7 +186,6 @@ export const page: PageContent = {
       { id: "pregrado", label: "Pregrado 100% Virtual" },
       { id: "posgrado", label: "Posgrado 100% Virtual" },
     ],
-    campuses: ["Arequipa", "Lima Sur", "Lima Norte"],
   },
   oferta: {
     title: "Oferta Académica",
