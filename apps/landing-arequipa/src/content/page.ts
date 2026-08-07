@@ -121,10 +121,10 @@ export interface PageContent {
   };
   espacios: {
     title: string;
-    titleAccent: string;
-    titleTail: string;
+    highlights: string[];
     ctaLabel: string;
     panelTitle: string;
+    panelIntro: string;
     items: EspaciosItem[];
     reserve: { text: string; ctaLabel: string; href: string };
   };
@@ -308,11 +308,15 @@ export const page: PageContent = {
     ],
   },
   espacios: {
-    title: "Conoce nuestras",
-    titleAccent: "4 salas de coworking",
-    titleTail: "y 1 sala gerencial, equipadas con Wi-Fi de alta velocidad y café ilimitado.",
+    title: "Conoce nuestros espacios",
+    highlights: [
+      "4 salas de coworking + 1 sala gerencial",
+      "Wi-Fi de alta velocidad",
+      "Café ilimitado",
+    ],
     ctaLabel: "Ver más",
-    panelTitle: "Conoce nuestros espacios",
+    panelTitle: "El espacio ideal para cada momento",
+    panelIntro: "Selecciona el ambiente que mejor se adapte a tus necesidades.",
     items: [
       {
         id: "overview",
