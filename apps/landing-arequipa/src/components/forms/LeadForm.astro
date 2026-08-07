@@ -1,0 +1,335 @@
+---
+import Button from "@autonoma/ui/components/Button.astro";
+import type { PosgradoTab, ProgramCategory } from "../../content/page";
+
+interface Props {
+  title: string;
+  submitLabel: string;
+  levels: { id: "pregrado" | "posgrado"; label: string }[];
+  campuses: string[];
+  pregradoCategories: ProgramCategory[];
+  posgradoTabs: PosgradoTab[];
+  class?: string;
+}
+
+const {
+  title,
+  submitLabel,
+  levels,
+  campuses,
+  pregradoCategories,
+  posgradoTabs,
+  class: className = "",
+} = Astro.props as Props;
+
+const careers = pregradoCategories
+  .flatMap((category) => category.programs)
+  .sort((a, b) => a.localeCompare(b, "es"));
+
+// Rendered up front so the full list survives without JS; the cascade only filters it.
+const specialties = posgradoTabs.flatMap((tab) =>
+  tab.groups.flatMap((group) => group.programs.map((program) => ({ tabId: tab.id, program }))),
+);
+
+// `focus:` rather than `focus-visible:` so mouse users get the feedback too; the
+// soft brand ring replaces the design system's global focus outline.
+const fieldStateClass =
+  "border border-transparent bg-white transition-[border-color,box-shadow,background-color,padding] duration-200 ease-out hover:border-brand/40 hover:shadow-[0_1px_6px_rgba(18,18,18,0.10)] focus:border-brand focus:shadow-[0_0_0_3px_rgba(255,102,0,0.15)] focus:outline-none";
+
+const inputClass = `h-[52px] w-full rounded-md px-3 text-[0.875rem] text-negro placeholder:text-[#939393] ${fieldStateClass}`;
+
+const selectClass = `peer h-[52px] w-full appearance-none rounded-lg px-3 pr-10 text-[0.875rem] text-negro data-[filled=true]:border-brand data-[filled=true]:pt-5 data-[filled=true]:font-semibold ${fieldStateClass}`;
+
+const floatLabelClass =
+  "pointer-events-none absolute left-3 top-[9px] -translate-y-1 text-[0.75rem] leading-none text-negro/50 opacity-0 transition-[opacity,translate] duration-200 ease-out peer-data-[filled=true]:translate-y-0 peer-data-[filled=true]:opacity-100";
+
+const chevronClass =
+  "pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2 text-negro/50 transition-[color,rotate] duration-200 ease-out peer-hover:text-brand peer-focus:rotate-180 peer-focus:text-brand";
+---
+
+<form
+  class:list={[
+    "flex w-full flex-col overflow-hidden bg-mint text-negro",
+    "rounded-none shadow-none",
+    "lg:rounded-[var(--radius-card)] lg:shadow-[0_20px_60px_rgba(0,0,0,0.18)]",
+    className,
+  ]}
+  method="post"
+  action="#inicio"
+  aria-labelledby="arequipa-form-title"
+  data-lead-form
+>
+  <div class="px-4 pt-6 text-center sm:px-6 lg:pt-6">
+    <h2 id="arequipa-form-title" class="text-[1.75rem] font-bold leading-snug text-brand">
+      {title}
+    </h2>
+  </div>
+
+  <div class="flex flex-col gap-4 px-4 py-6 sm:px-6">
+    {/* No `gap`: the cascade fields carry their own spacing inside the collapsible
+        area (`mt-3`) so it folds away together with the field height. */}
+    <div class="flex flex-col">
+      {/* Mobile Figma: una columna; desktop: pares. */}
+      <div class="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:gap-2">
+        <label class="sr-only" for="nombres">Nombres</label>
+        <input id="nombres" name="nombres" type="text" required placeholder="Nombres*" class={inputClass} />
+        <label class="sr-only" for="apellidos">Apellidos</label>
+        <input id="apellidos" name="apellidos" type="text" required placeholder="Apellidos*" class={inputClass} />
+      </div>
+      <div class="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2 lg:gap-2">
+        <label class="sr-only" for="celular">Celular</label>
+        <input id="celular" name="celular" type="tel" required placeholder="Celular" class={inputClass} />
+        <label class="sr-only" for="correo">Correo electrónico</label>
+        <input id="correo" name="correo" type="email" required placeholder="Correo electrónico" class={inputClass} />
+      </div>
+
+      <div class="relative mt-3">
+        <label class="sr-only" for="programa">Escoge el programa</label>
+        <select id="programa" name="programa" required class={selectClass} data-filled="false" data-cascade="programa">
+          <option value="" selected>Escoge el programa</option>
+          {levels.map((level) => <option value={level.id}>{level.label}</option>)}
+        </select>
+        <span class={floatLabelClass} aria-hidden="true">Escoge el programa</span>
+        <svg class={chevronClass} viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+        </svg>
+      </div>
+
+      <div class="field-step" data-step="carrera">
+        <div class="field-step-inner">
+          <div class="relative mt-3">
+            <label class="sr-only" for="carrera">Escoge tu carrera</label>
+            <select id="carrera" name="carrera" class={selectClass} data-filled="false" data-cascade="carrera">
+              <option value="" selected>Escoge tu carrera</option>
+              {careers.map((career) => <option value={career}>{career}</option>)}
+            </select>
+            <span class={floatLabelClass} aria-hidden="true">Escoge tu carrera</span>
+            <svg class={chevronClass} viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-step" data-step="categoria">
+        <div class="field-step-inner">
+          <div class="relative mt-3">
+            <label class="sr-only" for="categoria">Escoge tu categoría</label>
+            <select id="categoria" name="categoria" class={selectClass} data-filled="false" data-cascade="categoria">
+              <option value="" selected>Escoge tu categoría</option>
+              {posgradoTabs.map((tab) => <option value={tab.id}>{tab.name}</option>)}
+            </select>
+            <span class={floatLabelClass} aria-hidden="true">Escoge tu categoría</span>
+            <svg class={chevronClass} viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-step" data-step="especialidad">
+        <div class="field-step-inner">
+          <div class="relative mt-3">
+            <label class="sr-only" for="especialidad">Escoge una especialidad</label>
+            <select id="especialidad" name="especialidad" class={selectClass} data-filled="false" data-cascade="especialidad">
+              <option value="" selected>Escoge una especialidad</option>
+              {
+                specialties.map(({ tabId, program }) => (
+                  <option value={program} data-categoria={tabId}>
+                    {program}
+                  </option>
+                ))
+              }
+            </select>
+            <span class={floatLabelClass} aria-hidden="true">Escoge una especialidad</span>
+            <svg class={chevronClass} viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-step" data-step="campus">
+        <div class="field-step-inner">
+          <div class="relative mt-3">
+            <label class="sr-only" for="campus">Escoge tu campus</label>
+            <select id="campus" name="campus" class={selectClass} data-filled="false" data-cascade="campus">
+              <option value="" selected>Escoge tu campus</option>
+              {campuses.map((campus) => <option value={campus}>{campus}</option>)}
+            </select>
+            <span class={floatLabelClass} aria-hidden="true">Escoge tu campus</span>
+            <svg class={chevronClass} viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-caption font-semibold text-negro/80">(*) Campos obligatorios</p>
+
+    <label class="flex cursor-pointer items-start gap-2.5 text-caption leading-snug text-negro">
+      <input
+        type="checkbox"
+        name="privacidad"
+        required
+        class="mt-0.5 size-[18px] shrink-0 cursor-pointer rounded border-2 border-white bg-white accent-brand transition-[box-shadow,scale] duration-200 ease-out hover:shadow-[0_0_0_3px_rgba(255,102,0,0.15)] focus-visible:shadow-[0_0_0_3px_rgba(255,102,0,0.25)] active:scale-90"
+      />
+      <span>
+        Declaro expresamente haber leído y aceptado las
+        <a href="https://www.autonoma.pe/politica-de-privacidad" class="font-bold underline">
+          Políticas de Privacidad
+        </a>
+      </span>
+    </label>
+
+    <label class="flex cursor-pointer items-start gap-2.5 text-caption leading-snug text-negro">
+      <input
+        type="checkbox"
+        name="comunicaciones"
+        class="mt-0.5 size-[18px] shrink-0 cursor-pointer rounded border-2 border-white bg-white accent-brand transition-[box-shadow,scale] duration-200 ease-out hover:shadow-[0_0_0_3px_rgba(255,102,0,0.15)] focus-visible:shadow-[0_0_0_3px_rgba(255,102,0,0.25)] active:scale-90"
+      />
+      <span>Quiero recibir comunicaciones</span>
+    </label>
+
+    <Button
+      type="submit"
+      variant="brand"
+      class="btn-press !min-h-[54px] w-full !rounded-full !normal-case !tracking-normal !text-base"
+    >
+      {submitLabel}
+    </Button>
+  </div>
+</form>
+
+<script>
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /** Must match --duration-field in src/styles/arequipa.css. */
+  const FIELD_MS = 200;
+
+  document.querySelectorAll<HTMLFormElement>("[data-lead-form]").forEach((form) => {
+    const selects = new Map<string, HTMLSelectElement>();
+    form.querySelectorAll<HTMLSelectElement>("[data-cascade]").forEach((select) => {
+      selects.set(select.dataset.cascade!, select);
+    });
+
+    const steps = new Map<string, HTMLElement>();
+    form.querySelectorAll<HTMLElement>("[data-step]").forEach((step) => {
+      steps.set(step.dataset.step!, step);
+    });
+
+    const programa = selects.get("programa");
+    const categoria = selects.get("categoria");
+    const especialidad = selects.get("especialidad");
+    if (!programa || !categoria || !especialidad) return;
+
+    function reset(name: string) {
+      const select = selects.get(name);
+      if (!select) return;
+      select.value = "";
+      select.dataset.filled = "false";
+    }
+
+    const stepTimers = new Map<HTMLElement, number>();
+
+    /**
+     * `hidden` cannot be transitioned, so CSS folds the field via data-open and the
+     * attribute only lands once the exit finishes. `inert` is applied up front so the
+     * field leaves the tab order and the accessibility tree immediately.
+     */
+    function setStepOpen(step: HTMLElement, open: boolean, animate: boolean) {
+      const pending = stepTimers.get(step);
+      if (pending !== undefined) {
+        window.clearTimeout(pending);
+        stepTimers.delete(step);
+      }
+
+      if (!animate) {
+        delete step.dataset.animating;
+        step.dataset.open = open ? "true" : "false";
+        step.hidden = !open;
+        step.toggleAttribute("inert", !open);
+        return;
+      }
+
+      if (step.dataset.open === (open ? "true" : "false")) return;
+
+      if (open) {
+        step.hidden = false;
+        step.removeAttribute("inert");
+        step.dataset.animating = "true";
+        step.dataset.open = "false";
+        void step.offsetHeight; // flush the closed state so the opening transition has a start value
+        step.dataset.open = "true";
+        stepTimers.set(
+          step,
+          window.setTimeout(() => {
+            delete step.dataset.animating;
+            stepTimers.delete(step);
+          }, FIELD_MS),
+        );
+        return;
+      }
+
+      step.setAttribute("inert", "");
+      step.dataset.animating = "true";
+      step.dataset.open = "false";
+      stepTimers.set(
+        step,
+        window.setTimeout(() => {
+          delete step.dataset.animating;
+          step.hidden = true;
+          stepTimers.delete(step);
+        }, FIELD_MS),
+      );
+    }
+
+    function showStep(name: string, visible: boolean, animate: boolean) {
+      const step = steps.get(name);
+      const select = selects.get(name);
+      if (!step || !select) return;
+      setStepOpen(step, visible, animate);
+      select.required = visible;
+      if (!visible) reset(name);
+    }
+
+    /** Only the chosen category's programs stay selectable in the specialty list. */
+    function filterSpecialties(tabId: string) {
+      for (const option of especialidad!.options) {
+        if (!option.value) continue;
+        const match = option.dataset.categoria === tabId;
+        option.hidden = !match;
+        option.disabled = !match;
+      }
+    }
+
+    function render(animate: boolean) {
+      const level = programa!.value;
+      const hasLevel = level !== "";
+
+      showStep("carrera", level === "pregrado", animate);
+      showStep("categoria", level === "posgrado", animate);
+      showStep("campus", hasLevel, animate);
+
+      const hasCategory = level === "posgrado" && categoria!.value !== "";
+      if (hasCategory) filterSpecialties(categoria!.value);
+      showStep("especialidad", hasCategory, animate);
+    }
+
+    form.querySelectorAll<HTMLSelectElement>("[data-cascade]").forEach((select) => {
+      select.addEventListener("change", () => {
+        select.dataset.filled = select.value === "" ? "false" : "true";
+        if (select === programa || select === categoria) render(!prefersReducedMotion);
+      });
+    });
+
+    // The initial pass is not animated: the fields start out folded.
+    render(false);
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      window.location.assign("/gracias");
+    });
+  });
+</script>

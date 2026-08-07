@@ -1,28 +1,27 @@
 {
-  "name": "landing-autonoma",
+  "name": "autonoma-landings",
+  "private": true,
   "type": "module",
   "version": "0.0.1",
   "engines": {
     "node": ">=22.12.0"
   },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro check && tsc --noEmit && astro build",
-    "check": "astro check && tsc --noEmit",
-    "preview": "astro preview",
-    "export:static": "npm run build && node scripts/export-static.mjs",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
-    "@tailwindcss/typography": "^0.5.20",
-    "@tailwindcss/vite": "^4.3.3",
-    "astro": "^7.1.6",
-    "tailwindcss": "^4.3.3",
-    "zod": "^4.4.3"
+    "dev:principal": "npm run dev -w apps/landing-principal",
+    "dev:arequipa": "npm run dev -w apps/landing-arequipa",
+    "build": "npm run build -w apps/landing-arequipa",
+    "build:principal": "npm run build -w apps/landing-principal",
+    "build:arequipa": "npm run build -w apps/landing-arequipa",
+    "check:principal": "npm run check -w apps/landing-principal",
+    "check:arequipa": "npm run check -w apps/landing-arequipa",
+    "export:principal": "npm run export:static -w apps/landing-principal",
+    "export:arequipa": "npm run export:static -w apps/landing-arequipa"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3"

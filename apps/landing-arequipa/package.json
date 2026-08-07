@@ -1,0 +1,32 @@
+{
+  "name": "landing-arequipa",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev --port 4322",
+    "build": "astro check && tsc --noEmit && astro build",
+    "check": "astro check && tsc --noEmit",
+    "preview": "astro preview",
+    "assets": "node scripts/prepare-figma-assets.mjs",
+    "export:static": "npm run build && node scripts/export-static.mjs",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@autonoma/ui": "*",
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.1.6",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "prettier": "^3.9.6",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^6.0.3"
+  }
+}

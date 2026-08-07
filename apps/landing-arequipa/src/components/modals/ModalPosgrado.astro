@@ -1,0 +1,108 @@
+---
+import type { PosgradoTab } from "../../content/page";
+import ProgramGroup from "./ProgramGroup.astro";
+
+interface Props {
+  tabs: PosgradoTab[];
+}
+
+const { tabs } = Astro.props as Props;
+---
+
+<dialog
+  id="modal-posgrado"
+  class="fixed inset-0 z-[100] m-auto max-h-[90vh] w-[min(1160px,calc(100%-2rem))] overflow-auto bg-transparent p-0 text-negro backdrop:bg-negro/50"
+  data-modal="posgrado"
+  aria-labelledby="modal-posgrado-title"
+>
+  <button
+    type="button"
+    class="mb-5 ml-auto flex size-10 items-center justify-center rounded-full bg-white text-brand transition-colors hover:bg-mint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+    aria-label="Cerrar"
+    data-modal-close
+  >
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  </button>
+
+  <div class="rounded-[14px] bg-white p-8 sm:p-10" data-posgrado-tabs>
+    <h2 id="modal-posgrado-title" class="text-[1.75rem] font-semibold text-brand">
+      Elige el programa ideal para ti
+    </h2>
+
+    <div class="mt-5 flex flex-wrap gap-2.5" role="tablist" aria-label="Tipos de posgrado">
+      {
+        tabs.map((tab, index) => (
+          <button
+            type="button"
+            role="tab"
+            id={`posgrado-tab-${tab.id}`}
+            aria-selected={index === 0 ? "true" : "false"}
+            aria-controls={`posgrado-panel-${tab.id}`}
+            class:list={[
+              "h-11 rounded-xl border px-4 text-[1rem] font-semibold transition-colors",
+              index === 0
+                ? "border-brand bg-brand text-white"
+                : "border-border bg-white text-negro hover:border-brand hover:text-brand",
+            ]}
+            data-tab={tab.id}
+          >
+            {tab.label}
+          </button>
+        ))
+      }
+    </div>
+
+    {
+      tabs.map((tab, index) => (
+        <div
+          id={`posgrado-panel-${tab.id}`}
+          role="tabpanel"
+          aria-labelledby={`posgrado-tab-${tab.id}`}
+          class:list={["mt-8", index !== 0 && "hidden"]}
+          data-tab-panel={tab.id}
+          hidden={index !== 0}
+        >
+          {tab.groups.length === 1 ? (
+            <ProgramGroup group={tab.groups[0]} wide />
+          ) : (
+            <div class="grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+              {tab.groups.map((group) => (
+                <ProgramGroup group={group} />
+              ))}
+            </div>
+          )}
+        </div>
+      ))
+    }
+  </div>
+</dialog>
+
+<script>
+  const root = document.querySelector("[data-posgrado-tabs]");
+  if (root) {
+    const tabs = root.querySelectorAll<HTMLButtonElement>("[data-tab]");
+    const panels = root.querySelectorAll<HTMLElement>("[data-tab-panel]");
+
+    const activeClasses = ["border-brand", "bg-brand", "text-white"];
+    const idleClasses = ["border-border", "bg-white", "text-negro", "hover:border-brand", "hover:text-brand"];
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const id = tab.getAttribute("data-tab");
+        tabs.forEach((t) => {
+          const active = t === tab;
+          t.setAttribute("aria-selected", String(active));
+          activeClasses.forEach((cls) => t.classList.toggle(cls, active));
+          idleClasses.forEach((cls) => t.classList.toggle(cls, !active));
+        });
+        panels.forEach((panel) => {
+          const match = panel.getAttribute("data-tab-panel") === id;
+          panel.classList.toggle("hidden", !match);
+          panel.hidden = !match;
+        });
+      });
+    });
+  }
+</script>

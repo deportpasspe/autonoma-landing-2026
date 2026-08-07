@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "@autonoma/ui/components/Container.astro";
+import Section from "@autonoma/ui/components/Section.astro";
+import Heading from "@autonoma/ui/components/Heading.astro";
+import Tag from "@autonoma/ui/components/Tag.astro";
+import Button from "@autonoma/ui/components/Button.astro";
+
+const meta = {
+  title: "Styleguide — Arequipa",
+  description: "UI primitives + Arequipa patterns",
+  canonical: "http://localhost:4322/dev/styleguide",
+};
+---
+
+<BaseLayout {...meta}>
+  <Section tone="white">
+    <Container>
+      <Heading as="h1" size="display">Styleguide Arequipa</Heading>
+      <p class="mt-4 text-body text-text-muted">Tokens compartidos vía @autonoma/ui</p>
+    </Container>
+  </Section>
+  <Section tone="lavender">
+    <Container class="flex flex-col gap-8">
+      <div>
+        <Tag>Tipografía</Tag>
+        <Heading size="hero" class="mt-4">Hero</Heading>
+        <Heading size="h2" class="mt-4">Section</Heading>
+      </div>
+      <div class="flex flex-wrap gap-4">
+        <Button variant="brand">Brand</Button>
+        <Button variant="primary">Primary</Button>
+        <Button variant="secondary">Secondary</Button>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <Button type="button" variant="brand" class="!normal-case" data-open-modal="pregrado">
+          Abrir modal pregrado
+        </Button>
+        <Button type="button" variant="secondary" class="!normal-case" data-open-modal="posgrado">
+          Abrir modal posgrado
+        </Button>
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>

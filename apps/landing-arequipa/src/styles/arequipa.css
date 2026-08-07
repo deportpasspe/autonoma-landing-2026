@@ -1,0 +1,592 @@
+/**
+ * Overrides propios de la landing Arequipa. El design system compartido
+ * (@autonoma/ui) fija los títulos de sección en mayúsculas para la landing
+ * principal; el Figma de Arequipa los usa en capitalización normal.
+ */
+:root {
+  /* El script de LeadForm.astro replica esta duración para saber cuándo
+     aplicar `hidden` al terminar la salida: manténlas sincronizadas. */
+  --duration-field: 200ms;
+  /* Faq.astro espera este valor antes de aplicar `hidden` al cerrar. */
+  --duration-faq: 320ms;
+  /* Reveal editorial (Anthem-adaptado): un poco más de travel que el DS base. */
+  --reveal-travel: 1.75rem;
+  /* Naranja de marca vivo (design system). Contraste AA en texto chico:
+     usar text-brand-dark / text-negro localmente — no apagar el fill global. */
+  --color-brand: #ff6600;
+  --color-brand-dark: #e55c00;
+}
+
+/* AVIF más liviano que noise.webp (~4 KB vs ~46 KB); misma textura, sin recomprimir. */
+@layer base {
+  .section-noise::before {
+    background-image: url("/assets/textures/noise.avif");
+  }
+}
+
+@layer utilities {
+  .text-section-title-aq {
+    font-family: var(--font-display);
+    font-size: var(--text-section);
+    line-height: var(--leading-heading);
+    font-weight: 700;
+    text-transform: none;
+  }
+
+  /* Override del reveal del DS: travel editorial, sin bounce. */
+  .reveal-init {
+    transform: translateY(var(--reveal-travel));
+  }
+
+  /*
+    Line / clip reveals — máscaras estáticas en el markup (sin wrap JS → menos CLS).
+    El padre recibe `.is-visible` vía IO o data-reveal-eager.
+  */
+  .reveal-line-mask {
+    display: block;
+    overflow: hidden;
+    vertical-align: baseline;
+  }
+
+  .reveal-line-mask--inline {
+    display: inline-block;
+  }
+
+  .reveal-line {
+    display: block;
+    transform: translateY(110%);
+    transition: transform var(--duration-reveal) var(--ease-out);
+    transition-delay: calc(var(--reveal-delay, 0ms) + var(--line-delay, 0ms));
+    will-change: transform;
+  }
+
+  .reveal-lines.is-visible .reveal-line {
+    transform: translateY(0);
+  }
+
+  /* Above-the-fold: sin travel/opacity para no retrasar LCP/FCP. */
+  .reveal-lines.reveal-instant .reveal-line {
+    transform: none;
+    transition: none;
+  }
+
+  /* Above-the-fold rise without opacity:0 (avoids FOUC + CLS). */
+  .reveal-rise {
+    animation: aq-reveal-rise var(--duration-reveal) var(--ease-out) both;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+
+  @keyframes aq-reveal-rise {
+    from {
+      opacity: 0;
+      transform: translateY(var(--reveal-travel));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Parallax: scale evita bordes vacíos al desplazar; solo con JS activo. */
+  [data-parallax].is-parallaxing {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-line {
+      transform: none;
+      transition: none;
+      will-change: auto;
+    }
+
+    .reveal-rise {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    [data-parallax] {
+      transform: none !important;
+    }
+  }
+
+  /*
+    Revelado en cascada del formulario de leads. `grid-template-rows: 0fr → 1fr`
+    anima la altura real del campo sin fijarla a mano. Sin JS no existe
+    `data-open`, así que el campo queda abierto y usable.
+  */
+  .field-step {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition:
+      grid-template-rows var(--duration-field) var(--ease-out),
+      opacity var(--duration-field) var(--ease-out),
+      transform var(--duration-field) var(--ease-out);
+  }
+
+  /* El display de la capa utilities gana al `[hidden]` de la hoja del navegador. */
+  .field-step[hidden] {
+    display: none;
+  }
+
+  .field-step[data-open="false"] {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transform: translateY(-0.35rem);
+  }
+
+  .field-step > .field-step-inner {
+    min-height: 0;
+  }
+
+  /* Solo recortamos mientras el campo se pliega o está cerrado; ya abierto el
+     control necesita dejar salir su focus ring. */
+  .field-step[data-open="false"] > .field-step-inner,
+  .field-step[data-animating] > .field-step-inner {
+    overflow: hidden;
+  }
+
+  .btn-press {
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      transform var(--duration-fast) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out);
+  }
+
+  .btn-press:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(255, 102, 0, 0.28);
+  }
+
+  .btn-press:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(255, 102, 0, 0.24);
+  }
+
+  /*
+    Tabs de oficina. La inversión de colores del estado activo se define una
+    sola vez aquí y la comparten `:hover` y `:focus-visible`, para que el mouse
+    y el teclado reciban la misma pista visual sin duplicar variantes de
+    Tailwind en el componente. El icono usa `mask-image`, así que se pinta con
+    `background-color` y no con `color`.
+  */
+  .oficina-card {
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .oficina-card__icon,
+  .oficina-card .icon-mask,
+  .oficina-card__desc {
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .oficina-card[aria-selected="true"],
+  .oficina-card:hover,
+  .oficina-card:focus-visible {
+    border-color: var(--color-brand);
+    background-color: var(--color-brand);
+    color: #fff;
+  }
+
+  .oficina-card[aria-selected="true"] .oficina-card__icon,
+  .oficina-card:hover .oficina-card__icon,
+  .oficina-card:focus-visible .oficina-card__icon {
+    background-color: #fff;
+  }
+
+  .oficina-card[aria-selected="true"] .icon-mask,
+  .oficina-card:hover .icon-mask,
+  .oficina-card:focus-visible .icon-mask {
+    background-color: var(--color-brand);
+  }
+
+  .oficina-card[aria-selected="true"] .oficina-card__desc,
+  .oficina-card:hover .oficina-card__desc,
+  .oficina-card:focus-visible .oficina-card__desc {
+    color: rgb(255 255 255 / 0.9);
+  }
+
+  /* Único matiz propio del hover: al presionar, el naranja se oscurece. */
+  .oficina-card:active {
+    border-color: var(--color-brand-dark);
+    background-color: var(--color-brand-dark);
+  }
+
+  /*
+    El iframe de Google Maps no puede recortarse con border-radius irregular;
+    la máscara usa el mismo trazado Figma que el panel Virtual.
+  */
+  .contacto-map {
+    -webkit-mask-image: url("/assets/figma/arequipa/contacto/map-frame.svg");
+    mask-image: url("/assets/figma/arequipa/contacto/map-frame.svg");
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+
+  .oficina-photo__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    /* Encuadre bajo el techo: prioriza escritorios / branding, no el cielorraso. */
+    object-fit: cover;
+    object-position: center 42%;
+    opacity: 0;
+    transition: opacity var(--duration-med) var(--ease-out);
+    pointer-events: none;
+  }
+
+  .oficina-photo__img.is-active {
+    opacity: 1;
+  }
+
+  /*
+    Foto de Espacios: misma máscara speech-bubble que el mapa de contacto
+    (tip a la derecha, hacia el accordion).
+  */
+  .espacios-photo {
+    -webkit-mask-image: url("/assets/figma/arequipa/contacto/map-frame.svg");
+    mask-image: url("/assets/figma/arequipa/contacto/map-frame.svg");
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+
+  .espacios-acc-panel {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition:
+      grid-template-rows var(--duration-faq) var(--ease-out),
+      opacity var(--duration-faq) var(--ease-out);
+  }
+
+  .espacios-acc-panel[hidden] {
+    display: none;
+  }
+
+  .espacios-acc-panel[data-open="false"] {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  .espacios-acc-panel-inner {
+    min-height: 0;
+  }
+
+  .espacios-acc-panel[data-open="false"] > .espacios-acc-panel-inner,
+  .espacios-acc-panel[data-animating] > .espacios-acc-panel-inner {
+    overflow: hidden;
+  }
+
+  /* Accordion de Virtual: +/- vía aria-expanded. El peso tipográfico se
+     controla con utilidades Tailwind (font-bold/font-normal) porque el
+     botón hereda de un <h3> y una regla sola de font-weight no basta. */
+  .virtual-acc-trigger [data-accordion-icon-plus],
+  .virtual-acc-trigger [data-accordion-icon-minus] {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity var(--duration-faq) var(--ease-out);
+  }
+
+  .virtual-acc-trigger [data-accordion-icon-plus] {
+    opacity: 1;
+  }
+
+  .virtual-acc-trigger [data-accordion-icon-minus] {
+    opacity: 0;
+  }
+
+  .virtual-acc-trigger[aria-expanded="true"] [data-accordion-icon-plus] {
+    opacity: 0;
+  }
+
+  .virtual-acc-trigger[aria-expanded="true"] [data-accordion-icon-minus] {
+    opacity: 1;
+  }
+
+  .virtual-acc-panel {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition:
+      grid-template-rows var(--duration-faq) var(--ease-out),
+      opacity var(--duration-faq) var(--ease-out);
+  }
+
+  .virtual-acc-panel[hidden] {
+    display: none;
+  }
+
+  .virtual-acc-panel[data-open="false"] {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  .virtual-acc-panel-inner {
+    min-height: 0;
+  }
+
+  .virtual-acc-panel[data-open="false"] > .virtual-acc-panel-inner,
+  .virtual-acc-panel[data-animating] > .virtual-acc-panel-inner {
+    overflow: hidden;
+  }
+
+  /*
+    FAQ accordion: altura real con grid 0fr→1fr, más color/borde/chevron.
+    El script sincroniza `data-open` y espera --duration-faq antes de `hidden`.
+  */
+  .faq-acc-item {
+    transition:
+      background-color var(--duration-faq) var(--ease-out),
+      border-color var(--duration-faq) var(--ease-out),
+      border-radius var(--duration-faq) var(--ease-out);
+  }
+
+  .faq-acc-trigger {
+    transition: color var(--duration-faq) var(--ease-out);
+  }
+
+  .faq-acc-chevron {
+    transition: transform var(--duration-faq) var(--ease-out);
+  }
+
+  .faq-acc-panel {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition:
+      grid-template-rows var(--duration-faq) var(--ease-out),
+      opacity var(--duration-faq) var(--ease-out);
+  }
+
+  .faq-acc-panel[hidden] {
+    display: none;
+  }
+
+  .faq-acc-panel[data-open="false"] {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  .faq-acc-panel-inner {
+    min-height: 0;
+  }
+
+  .faq-acc-panel[data-open="false"] > .faq-acc-panel-inner,
+  .faq-acc-panel[data-animating] > .faq-acc-panel-inner {
+    overflow: hidden;
+  }
+
+  /*
+    Oferta Pregrado/Posgrado: ambas fotos activas por defecto.
+    En dispositivos con hover, al pasar por una card la otra se atenúa;
+    la card activa hace zoom sutil en la imagen (sin motion reducida).
+  */
+  @media (hover: hover) {
+    .oferta-cards:has(.oferta-card:is(:hover, :focus-visible))
+      .oferta-card:not(:hover):not(:focus-visible)
+      .oferta-card__media {
+      opacity: 0.5;
+    }
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .oferta-card:is(:hover, :focus-visible) .oferta-card__media {
+      transform: scale(1.05);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .oferta-card__media {
+      transition: opacity var(--duration-med, 300ms) var(--ease-out);
+      transform: none;
+    }
+
+    .field-step {
+      transition: none;
+    }
+
+    .field-step[data-open="false"] {
+      transform: none;
+    }
+
+    .btn-press,
+    .btn-press:hover,
+    .btn-press:active {
+      transition: none;
+      transform: none;
+    }
+
+    .oficina-photo__img {
+      transition: none;
+    }
+
+    .espacios-acc-panel {
+      transition: none;
+    }
+
+    .oficina-card,
+    .oficina-card__icon,
+    .oficina-card .icon-mask,
+    .oficina-card__desc {
+      transition: none;
+    }
+
+    .faq-acc-item,
+    .faq-acc-trigger,
+    .faq-acc-chevron,
+    .faq-acc-panel,
+    .virtual-acc-panel,
+    .virtual-acc-trigger [data-accordion-icon-plus],
+    .virtual-acc-trigger [data-accordion-icon-minus] {
+      transition: none;
+    }
+  }
+}
+
+/*
+  Franjas U sobre secciones brand (Figma Frame 4829).
+  z-index 2: encima del noise (::before = 1), debajo del contenido (z-index 10).
+  Fill del SVG: #E05F0E sobre #f60 / #ed6b06.
+*/
+.u-pattern-decor {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.14375rem; /* 164.57 − 146.265 ≈ 18.3px entre filas */
+  width: min(26.875rem, 42vw);
+  pointer-events: none;
+  user-select: none;
+}
+
+.u-pattern-decor__row {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.u-pattern-decor--right {
+  right: 0;
+}
+
+.u-pattern-decor--left {
+  left: 0;
+}
+
+/* Oferta 33:5511 — right @ x=1010, top≈539/1247 */
+.u-pattern-decor--oferta {
+  top: 43.2%;
+}
+
+/* Espacios 33:5822 — left overflow x≈−54; top≈456/690 (mobile 33:10297 similar) */
+.u-pattern-decor--espacios {
+  left: -3.75rem;
+  top: auto;
+  bottom: -2.5rem;
+  width: min(26.875rem, 70vw);
+}
+
+@media (max-width: 639px) {
+  .u-pattern-decor--espacios {
+    left: -7.75rem;
+    bottom: -1.5rem;
+    width: min(25.8rem, 100vw);
+  }
+}
+
+/* FAQ 33:5968 — right overflow x=1077 (sale ~67px del artboard) */
+.u-pattern-decor--faq {
+  right: -4.2rem;
+  top: 64.5%;
+}
+
+/* Oferta/FAQ: solo desktop (mobile Figma no trae las franjas en esas secciones). */
+@media (max-width: 1023px) {
+  .u-pattern-decor--oferta,
+  .u-pattern-decor--faq {
+    display: none;
+  }
+}
+
+/*
+  Hero cover (Figma 33:5271 + ajuste de corte):
+  - object-position estable (sin translate-x).
+  - --hero-split-inset: distancia desde el borde derecho del viewport hasta
+    el glifo inicial de "Da el…" (título centrado dentro de la card).
+    Geometría = Container (--page-max, --space-section-x) + col form
+    (--form-card); el gap del grid cancela. El inset del título centrado
+    es (form-card − ancho intrínseco del H2) / 2.
+*/
+.hero-cover-img {
+  object-position: 72% center;
+}
+
+@media (min-width: 1024px) {
+  #inicio {
+    /* Ancho intrínseco medido de "Da el siguiente paso" @ 1.75rem bold (~267.3px). */
+    --hero-form-title-text: 16.71rem;
+    /*
+      form_left = side + page_max - section_x - form_card
+      da_left   = form_left + (form_card - title_text) / 2
+      inset     = 100vw - da_left
+                = side + section_x + (form_card + title_text) / 2
+    */
+    --hero-split-inset: calc(
+      (100vw - min(100vw, 90rem)) / 2 + var(--space-section-x) +
+        (var(--form-card) + var(--hero-form-title-text)) / 2
+    );
+  }
+
+  .hero-cover-img {
+    /* Mujer hacia el borde derecho de la foto (puede solapar el naranja). */
+    object-position: 68% center;
+  }
+
+  /*
+    Panel brand derecho: patrón U en franjas superior e inferior
+    (Figma Frame 4827 + vectors 33:5272–5282). Mismo SVG que UPatternDecor.
+  */
+  .hero-brand-rail {
+    background-color: var(--color-brand);
+    background-image:
+      url("/assets/figma/arequipa/hero/u-pattern-strip-section.svg"),
+      url("/assets/figma/arequipa/hero/u-pattern-strip-section.svg");
+    background-repeat: repeat-x, repeat-x;
+    background-position: top left, bottom left;
+    /* 146.265 / 800 ≈ 18.3% de la altura del artboard */
+    background-size: auto 18.283%;
+  }
+}
+
+/* Header overlay en mobile (Figma 33:9852): logo/menú blancos sobre el hero;
+   al abrir el drawer vuelve a superficie blanca legible. */
+@media (max-width: 1023px) {
+  [data-header].is-nav-open {
+    background-color: var(--color-white, #fff);
+    border-bottom: 1px solid var(--color-border, #e5e5e5);
+  }
+
+  [data-header].is-nav-open .icon-mask {
+    background-color: var(--color-brand, #f60) !important;
+  }
+
+  [data-header].is-nav-open [data-mobile-nav-toggle] {
+    border-color: var(--color-border, #e5e5e5);
+    color: var(--color-negro, #121212);
+  }
+}

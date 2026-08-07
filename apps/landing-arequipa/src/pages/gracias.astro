@@ -1,0 +1,85 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import Section from "@autonoma/ui/components/Section.astro";
+import Container from "@autonoma/ui/components/Container.astro";
+import Heading from "@autonoma/ui/components/Heading.astro";
+import Button from "@autonoma/ui/components/Button.astro";
+import { site } from "../content/site";
+import { gracias } from "../content/gracias";
+import { buildPageMeta } from "../lib/seo";
+
+const meta = buildPageMeta({
+  title: gracias.title,
+  description: gracias.description,
+  path: "/gracias",
+});
+
+const toHomeAnchor = (href: string) => (href.startsWith("#") ? `/${href}` : href);
+
+const graciasSettings = {
+  ...site,
+  navLinks: site.navLinks.map((link) => ({
+    label: link.label,
+    href: toHomeAnchor(link.href),
+  })),
+  ctaHref: toHomeAnchor(site.ctaHref),
+};
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  canonical={meta.canonical}
+  lcpImage="/assets/figma/arequipa/hero/hero-cover.webp"
+  noindex
+>
+  <Header settings={graciasSettings} />
+  <main id="main-content">
+    <Section
+      tone="brand"
+      class="flex min-h-[60vh] items-center"
+      ariaLabelledby="gracias-heading"
+    >
+      <div class="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+        <img
+          src="/assets/figma/arequipa/hero/hero-cover.webp"
+          alt=""
+          class="size-full object-cover object-center"
+          width="1084"
+          height="803"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <div class="absolute inset-0 bg-gradient-to-b from-negro/70 via-negro/55 to-negro/70"></div>
+      </div>
+      <Container narrow>
+        <div class="mx-auto flex max-w-xl flex-col items-center text-center" data-reveal>
+          <span
+            class="mb-6 flex size-16 items-center justify-center rounded-full bg-brand text-white"
+            aria-hidden="true"
+          >
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 12.5l5 5L19 7"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </span>
+          <Heading as="h1" size="h2" id="gracias-heading" class="text-section-title-aq text-white">
+            {gracias.heading}
+          </Heading>
+          <p class="mt-4 text-body text-white/90">{gracias.body}</p>
+          <Button href="/" variant="brand" class="mt-8 !normal-case !tracking-normal">
+            {gracias.ctaLabel}
+          </Button>
+        </div>
+      </Container>
+    </Section>
+  </main>
+  <Footer settings={site} />
+</BaseLayout>

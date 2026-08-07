@@ -1,0 +1,270 @@
+---
+import type { PageContent } from "../../content/page";
+import Container from "@autonoma/ui/components/Container.astro";
+import Section from "@autonoma/ui/components/Section.astro";
+import UPatternDecor from "../../components/ui/UPatternDecor.astro";
+
+interface Props {
+  espacios: PageContent["espacios"];
+}
+
+const { espacios } = Astro.props as Props;
+const initial = espacios.items[0];
+---
+
+<Section id="espacios" tone="brand" ariaLabelledby="espacios-title" class="!text-white">
+  <UPatternDecor placement="espacios" side="left" />
+  <Container>
+    <div class="grid gap-8 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] lg:gap-10">
+      <div>
+        <h2 id="espacios-title" class="text-section-title-aq leading-tight reveal-lines" data-reveal-lines>
+          <span class="reveal-line-mask block">
+            <span class="reveal-line block font-light" style="--line-delay: 0ms">{espacios.title}</span>
+          </span>
+          <span class="reveal-line-mask block">
+            <span class="reveal-line block font-bold" style="--line-delay: 90ms">{espacios.titleAccent}</span>
+          </span>
+          <span class="reveal-line-mask block">
+            <span class="reveal-line block font-light" style="--line-delay: 180ms">{espacios.titleTail}</span>
+          </span>
+        </h2>
+        <a
+          href="#oficina"
+          class="mt-8 inline-flex min-h-11 items-center justify-center rounded-full bg-white px-8 py-3 text-small font-bold text-brand transition-colors hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          data-reveal
+        >
+          {espacios.ctaLabel}
+        </a>
+      </div>
+
+      <div data-reveal data-espacios-root>
+        <div class="grid gap-6 rounded-[var(--radius-card)] bg-mint p-6 text-negro sm:grid-cols-2 sm:p-8">
+          {/* Mobile Figma: solo accordion; la foto entra desde sm. */}
+          <div
+            class="espacios-photo relative hidden aspect-[403/369] w-full overflow-hidden sm:block"
+            aria-live="polite"
+            data-espacios-panel
+          >
+            <div
+              class="absolute inset-0 origin-center"
+              data-parallax
+              data-parallax-speed="0.08"
+              data-parallax-max="28"
+            >
+              <img
+                src={initial.imageSrc}
+                alt={initial.imageAlt}
+                class="oficina-photo__img is-active"
+                width="404"
+                height="369"
+                loading="lazy"
+                data-espacios-photo
+                data-layer="a"
+              />
+              <img
+                src={initial.imageSrc}
+                alt=""
+                class="oficina-photo__img"
+                width="404"
+                height="369"
+                loading="lazy"
+                aria-hidden="true"
+                data-espacios-photo
+                data-layer="b"
+              />
+            </div>
+          </div>
+
+          <div data-accordion="espacios">
+            <h3 class="text-h2 font-bold text-brand">{espacios.panelTitle}</h3>
+
+            <div class="mt-4">
+              {
+                espacios.items.map((item, index) => {
+                  const open = index === 0;
+                  return (
+                    <div class="mb-3" data-accordion-item>
+                      <h4>
+                        <button
+                          type="button"
+                          class:list={[
+                            "flex w-full items-center justify-between gap-3 rounded-full border border-brand px-6 py-3.5 text-left text-small font-bold transition-colors duration-[var(--duration-faq)] ease-[var(--ease-out)]",
+                            open ? "bg-brand text-white" : "bg-transparent text-brand",
+                          ]}
+                          aria-expanded={open ? "true" : "false"}
+                          data-accordion-trigger
+                          data-image-src={item.imageSrc}
+                          data-image-alt={item.imageAlt}
+                        >
+                          <span>{item.title}</span>
+                          <svg
+                            class:list={[
+                              "size-5 shrink-0 transition-transform duration-[var(--duration-faq)] ease-[var(--ease-out)]",
+                              open && "rotate-180",
+                            ]}
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            aria-hidden="true"
+                            data-accordion-icon
+                          >
+                            <path
+                              d="M5 8l5 5 5-5"
+                              stroke="currentColor"
+                              stroke-width="1.8"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      </h4>
+                      <div
+                        class="espacios-acc-panel"
+                        data-accordion-panel
+                        data-open={open ? "true" : "false"}
+                        hidden={!open}
+                      >
+                        <div class="espacios-acc-panel-inner">
+                          <p class="px-3 pt-3 text-small text-negro">{item.body}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              }
+            </div>
+
+            <div class="mt-8 rounded-[var(--radius-card)] bg-brand px-6 py-5 text-center text-white sm:hidden">
+              <p class="text-body font-semibold">{espacios.reserve.text}</p>
+              <a
+                href={espacios.reserve.href}
+                class="mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-white px-6 py-3 text-small font-bold text-brand transition-colors hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
+                {espacios.reserve.ctaLabel}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 hidden flex-wrap items-center justify-between gap-4 rounded-[var(--radius-card)] border border-white/60 px-6 py-4 sm:flex">
+          <p class="text-body font-semibold text-white">{espacios.reserve.text}</p>
+          <a
+            href={espacios.reserve.href}
+            class="inline-flex min-h-11 items-center justify-center rounded-full bg-white px-6 py-3 text-small font-bold text-brand transition-colors hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            {espacios.reserve.ctaLabel}
+          </a>
+        </div>
+      </div>
+    </div>
+  </Container>
+</Section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-espacios-root]").forEach((root) => {
+    const prefersReduced =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const durationMs = (() => {
+      const raw = getComputedStyle(document.documentElement).getPropertyValue("--duration-faq").trim();
+      if (raw.endsWith("ms")) return Number.parseFloat(raw) || 320;
+      if (raw.endsWith("s")) return (Number.parseFloat(raw) || 0.32) * 1000;
+      return 320;
+    })();
+
+    const photos = Array.from(root.querySelectorAll<HTMLImageElement>("[data-espacios-photo]"));
+    const items = Array.from(root.querySelectorAll<HTMLElement>("[data-accordion-item]"));
+    const timers = new WeakMap<HTMLElement, number>();
+    let activeLayer =
+      photos.find((img) => img.classList.contains("is-active")) ?? photos[0] ?? null;
+
+    const syncPhoto = (src: string, alt: string) => {
+      if (!photos.length) return;
+      const current = activeLayer ?? photos[0];
+      if (!current || current.getAttribute("src") === src) {
+        if (current) current.alt = alt;
+        return;
+      }
+
+      const nextPhoto = photos.find((img) => img !== current) ?? photos[0];
+      if (!nextPhoto) return;
+
+      nextPhoto.src = src;
+      nextPhoto.alt = alt;
+
+      if (prefersReduced) {
+        current.classList.remove("is-active");
+        current.alt = "";
+        current.setAttribute("aria-hidden", "true");
+        nextPhoto.classList.add("is-active");
+        nextPhoto.removeAttribute("aria-hidden");
+        activeLayer = nextPhoto;
+        return;
+      }
+
+      nextPhoto.classList.add("is-active");
+      nextPhoto.removeAttribute("aria-hidden");
+      current.classList.remove("is-active");
+      current.alt = "";
+      current.setAttribute("aria-hidden", "true");
+      activeLayer = nextPhoto;
+    };
+
+    const setOpen = (item: HTMLElement, open: boolean) => {
+      const trigger = item.querySelector<HTMLButtonElement>("[data-accordion-trigger]");
+      const panel = item.querySelector<HTMLElement>("[data-accordion-panel]");
+      const icon = item.querySelector<HTMLElement>("[data-accordion-icon]");
+      if (!trigger || !panel) return;
+
+      const prev = timers.get(panel);
+      if (prev) window.clearTimeout(prev);
+
+      trigger.setAttribute("aria-expanded", String(open));
+      trigger.classList.toggle("bg-brand", open);
+      trigger.classList.toggle("text-white", open);
+      trigger.classList.toggle("bg-transparent", !open);
+      trigger.classList.toggle("text-brand", !open);
+      icon?.classList.toggle("rotate-180", open);
+
+      if (open) {
+        if (trigger.dataset.imageSrc) {
+          syncPhoto(trigger.dataset.imageSrc, trigger.dataset.imageAlt ?? "");
+        }
+        panel.hidden = false;
+        void panel.offsetHeight;
+        panel.dataset.open = "true";
+        panel.removeAttribute("data-animating");
+        return;
+      }
+
+      panel.dataset.open = "false";
+      panel.setAttribute("data-animating", "");
+
+      if (prefersReduced) {
+        panel.hidden = true;
+        panel.removeAttribute("data-animating");
+        return;
+      }
+
+      const id = window.setTimeout(() => {
+        if (panel.dataset.open === "false") {
+          panel.hidden = true;
+          panel.removeAttribute("data-animating");
+        }
+      }, durationMs);
+      timers.set(panel, id);
+    };
+
+    items.forEach((item) => {
+      const trigger = item.querySelector<HTMLButtonElement>("[data-accordion-trigger]");
+      if (!trigger) return;
+
+      trigger.addEventListener("click", () => {
+        const willOpen = trigger.getAttribute("aria-expanded") !== "true";
+        // Keep one item open so the left photo always has a matching state.
+        if (!willOpen) return;
+        items.forEach((other) => setOpen(other, other === item));
+      });
+    });
+  });
+</script>

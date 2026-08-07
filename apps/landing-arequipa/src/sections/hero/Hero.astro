@@ -1,0 +1,105 @@
+---
+import type { PageContent } from "../../content/page";
+import Container from "@autonoma/ui/components/Container.astro";
+
+interface Props {
+  hero: PageContent["hero"];
+}
+
+const { hero } = Astro.props as Props;
+---
+
+<section
+  id="inicio"
+  class="relative overflow-hidden bg-mint text-white lg:bg-brand"
+  aria-labelledby="hero-title"
+>
+  {/*
+    Mobile (Figma 33:9852): la foto solo cubre el bloque de copy (~650px);
+    el form queda debajo a ancho completo sobre mint.
+    Desktop: el corte foto→naranja sigue el inicio del título del form
+    ("Da el…") vía --hero-split-inset (mismas vars que el grid).
+  */}
+  <div
+    class="hero-cover pointer-events-none absolute inset-x-0 top-0 h-[min(40.625rem,92svh)] overflow-hidden lg:inset-y-0 lg:left-0 lg:right-[var(--hero-split-inset)] lg:h-auto"
+    aria-hidden="true"
+  >
+    <div class="size-full" data-parallax data-parallax-speed="0.08" data-parallax-max="40">
+      <img
+        src={hero.imageSrc}
+        srcset="/assets/figma/arequipa/hero/hero-cover-828.webp 828w, /assets/figma/arequipa/hero/hero-cover.webp 1084w"
+        sizes="(min-width: 1024px) calc(100vw - var(--hero-split-inset)), 100vw"
+        alt=""
+        class="hero-cover-img size-full object-cover"
+        width="1084"
+        height="803"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </div>
+    <div
+      class="absolute inset-0 bg-gradient-to-b from-negro/50 via-negro/20 to-negro/75 lg:bg-gradient-to-r lg:from-[#0b3a63]/85 lg:via-[#0b3a63]/25 lg:to-transparent"
+    >
+    </div>
+  </div>
+
+  {/* Panel brand + patrón U; ancho = --hero-split-inset (alinea con el glifo "D"). */}
+  <div
+    class="hero-brand-rail pointer-events-none absolute inset-y-0 right-0 hidden w-[var(--hero-split-inset)] lg:block"
+    aria-hidden="true"
+  >
+  </div>
+
+  <Container
+    class="relative z-10 grid lg:min-h-[min(800px,100svh)] lg:grid-cols-[minmax(0,1fr)_var(--form-card)] lg:items-center lg:gap-[var(--form-rail-gap)] lg:py-28"
+  >
+    {/* Eager: above-the-fold sin opacity:0 (CLS + conversión). */}
+    <div class="flex max-w-lg flex-col py-20 pb-16 sm:py-24 sm:pb-20 lg:py-0" data-reveal-stagger data-reveal-eager>
+      <span
+        class="order-1 inline-flex min-h-9 w-fit items-center rounded-md bg-brand px-4 text-small font-semibold uppercase tracking-wide text-white lg:order-3 lg:mt-6"
+        data-reveal-item
+      >
+        {hero.badge}
+      </span>
+      <h1
+        id="hero-title"
+        class="reveal-lines reveal-instant is-visible order-2 mt-5 font-display text-[clamp(2rem,8vw,2.75rem)] leading-[1.1] lg:order-1 lg:mt-0 lg:text-[clamp(2rem,3.4vw,2.75rem)]"
+        data-reveal-item
+        data-reveal-lines
+        data-reveal-eager
+      >
+        <span class="reveal-line-mask block">
+          <span class="reveal-line block font-light" style="--line-delay: 0ms">{hero.title}</span>
+        </span>
+        <span class="reveal-line-mask block">
+          <span class="reveal-line block font-bold" style="--line-delay: 90ms">{hero.titleAccent}</span>
+        </span>
+      </h1>
+      <p class="order-3 mt-4 max-w-xs text-small text-white/90 lg:order-2" data-reveal-item>
+        {hero.subtitle}
+      </p>
+
+      <aside
+        class="order-4 mt-8 max-w-full rounded-[var(--radius-card)] bg-brand p-6 text-white sm:max-w-xs lg:mt-10"
+        aria-label="Ubicación de la oficina"
+        data-reveal-item
+      >
+        <p class="text-h2 font-bold">{hero.mapCard.title}</p>
+        <p class="mt-3 flex items-start gap-2 text-small font-semibold">
+          <span aria-hidden="true">&rsaquo;</span>
+          {hero.mapCard.address}
+        </p>
+        <p class="mt-1 flex items-start gap-2 text-small font-semibold">
+          <span aria-hidden="true">&rsaquo;</span>
+          {hero.mapCard.phone}
+        </p>
+      </aside>
+    </div>
+
+    {/* Form siempre visible — sin reveal que retrase leads. */}
+    <div class="max-lg:-mx-[var(--space-section-x)]" data-hero-form>
+      <slot name="form" />
+    </div>
+  </Container>
+</section>

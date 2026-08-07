@@ -1,0 +1,27 @@
+{
+  "name": "@autonoma/ui",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "./styles/global.css": "./src/styles/global.css",
+    "./components/BrandCoverBg.astro": "./src/components/ui/BrandCoverBg.astro",
+    "./components/Button.astro": "./src/components/ui/Button.astro",
+    "./components/Container.astro": "./src/components/ui/Container.astro",
+    "./components/FormCheckbox.astro": "./src/components/ui/FormCheckbox.astro",
+    "./components/FormField.astro": "./src/components/ui/FormField.astro",
+    "./components/FormInput.astro": "./src/components/ui/FormInput.astro",
+    "./components/FormSelect.astro": "./src/components/ui/FormSelect.astro",
+    "./components/FormTextarea.astro": "./src/components/ui/FormTextarea.astro",
+    "./components/Heading.astro": "./src/components/ui/Heading.astro",
+    "./components/Section.astro": "./src/components/ui/Section.astro",
+    "./components/Tag.astro": "./src/components/ui/Tag.astro",
+    "./components/TextLink.astro": "./src/components/ui/TextLink.astro"
+  },
+  "peerDependencies": {
+    "astro": "^7.0.0",
+    "tailwindcss": "^4.0.0",
+    "@fontsource-variable/bricolage-grotesque": "^5.0.0",
+    "@tailwindcss/typography": "^0.5.0"
+  }
+}

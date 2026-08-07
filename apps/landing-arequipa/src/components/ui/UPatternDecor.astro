@@ -1,0 +1,43 @@
+---
+/**
+ * Franjas decorativas "U" (Figma Frame 4829 / 4827).
+ * Dos filas de 5 U (~430×146) sobre fondos brand; overflow del section las recorta.
+ */
+type Side = "left" | "right";
+type Placement = "oferta" | "espacios" | "faq";
+
+interface Props {
+  side?: Side;
+  placement: Placement;
+  class?: string;
+}
+
+const { side = "right", placement, class: className = "" } = Astro.props as Props;
+---
+
+<div
+  class:list={[
+    "u-pattern-decor",
+    side === "left" ? "u-pattern-decor--left" : "u-pattern-decor--right",
+    `u-pattern-decor--${placement}`,
+    className,
+  ]}
+  aria-hidden="true"
+>
+  <img
+    src="/assets/figma/arequipa/hero/u-pattern-strip-section.svg"
+    alt=""
+    width="430"
+    height="146"
+    class="u-pattern-decor__row"
+    decoding="async"
+  />
+  <img
+    src="/assets/figma/arequipa/hero/u-pattern-strip-section.svg"
+    alt=""
+    width="430"
+    height="146"
+    class="u-pattern-decor__row"
+    decoding="async"
+  />
+</div>

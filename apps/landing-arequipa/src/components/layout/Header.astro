@@ -1,0 +1,188 @@
+---
+import type { SiteSettings } from "../../content/site";
+import Container from "@autonoma/ui/components/Container.astro";
+import IconMask from "../ui/IconMask.astro";
+
+interface Props {
+  settings: SiteSettings;
+}
+
+const { settings } = Astro.props as Props;
+---
+
+<header
+  class="absolute inset-x-0 top-0 z-50 border-transparent bg-transparent lg:sticky lg:border-b lg:border-border lg:bg-white"
+  data-header
+>
+  <Container>
+    <div class="flex min-h-[72px] items-center justify-between gap-4 py-2 lg:gap-8">
+      <a
+        href="/"
+        class="flex shrink-0 items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+        aria-label={settings.logoAlt}
+      >
+        <IconMask
+          src={settings.logoSrc}
+          class="h-10 w-[140px] bg-white md:h-12 md:w-[168px] lg:bg-brand"
+        />
+      </a>
+
+      <nav
+        class="hidden min-w-0 flex-1 items-center justify-end gap-6 lg:flex xl:gap-8"
+        aria-label="Navegación principal"
+      >
+        {
+          settings.navLinks.map((link) =>
+            link.menu ? (
+              <div class="relative" data-nav-dropdown>
+                <button
+                  type="button"
+                  class="inline-flex min-h-11 items-center gap-1 px-1 text-small text-negro transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                  data-nav-dropdown-trigger
+                >
+                  {link.label}
+                  <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+                    <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" />
+                  </svg>
+                </button>
+                <ul
+                  class="absolute right-0 top-full z-10 hidden min-w-[260px] rounded-[var(--radius-card)] border border-border bg-white p-2 shadow-lg"
+                  data-nav-dropdown-menu
+                  hidden
+                >
+                  {link.menu.map((entry) => (
+                    <li>
+                      <button
+                        type="button"
+                        class="flex w-full items-center rounded-lg px-4 py-3 text-left text-small text-negro hover:bg-brand/10 hover:text-brand"
+                        data-open-modal={entry.modalId}
+                      >
+                        {entry.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <a
+                href={link.href}
+                class="inline-flex min-h-11 items-center px-1 text-small text-negro transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              >
+                {link.label}
+              </a>
+            ),
+          )
+        }
+        <a
+          href={settings.ctaHref}
+          class="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-brand px-7 text-small font-bold text-brand transition-colors hover:bg-brand hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+        >
+          {settings.ctaLabel}
+        </a>
+      </nav>
+
+      <button
+        type="button"
+        class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-[var(--radius-button)] border border-white/70 p-2 text-white lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        aria-label="Abrir menú"
+        data-mobile-nav-toggle
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+        </svg>
+      </button>
+    </div>
+  </Container>
+
+  <nav id="mobile-nav" class="hidden border-t border-border bg-white lg:hidden" aria-label="Navegación móvil" data-mobile-nav>
+    <Container>
+      <ul class="flex flex-col gap-1 py-4">
+        {
+          settings.navLinks.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="flex min-h-12 items-center rounded-[var(--radius-button)] px-3 text-body text-negro hover:bg-brand/10"
+                data-mobile-nav-link
+              >
+                {link.label}
+              </a>
+              {link.menu && (
+                <ul class="ml-3 border-l border-border pl-3">
+                  {link.menu.map((entry) => (
+                    <li>
+                      <button
+                        type="button"
+                        class="flex min-h-11 w-full items-center px-3 text-left text-small text-negro hover:text-brand"
+                        data-open-modal={entry.modalId}
+                        data-mobile-nav-link
+                      >
+                        {entry.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))
+        }
+        <li class="pt-2">
+          <a
+            href={settings.ctaHref}
+            class="flex min-h-12 w-full items-center justify-center rounded-full border-2 border-brand text-small font-bold text-brand"
+            data-mobile-nav-link
+          >
+            {settings.ctaLabel}
+          </a>
+        </li>
+      </ul>
+    </Container>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.querySelector("[data-mobile-nav-toggle]");
+  const nav = document.querySelector("[data-mobile-nav]");
+  const links = document.querySelectorAll("[data-mobile-nav-link]");
+
+  if (toggle instanceof HTMLButtonElement && nav instanceof HTMLElement) {
+    const header = document.querySelector<HTMLElement>("[data-header]");
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+      nav.classList.toggle("hidden", !open);
+      header?.classList.toggle("is-nav-open", open);
+    };
+
+    toggle.addEventListener("click", () => setOpen(toggle.getAttribute("aria-expanded") !== "true"));
+    links.forEach((link) => link.addEventListener("click", () => setOpen(false)));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpen(false);
+    });
+  }
+
+  document.querySelectorAll("[data-nav-dropdown]").forEach((dropdown) => {
+    const trigger = dropdown.querySelector<HTMLButtonElement>("[data-nav-dropdown-trigger]");
+    const menu = dropdown.querySelector<HTMLElement>("[data-nav-dropdown-menu]");
+    if (!trigger || !menu) return;
+
+    const setOpen = (open: boolean) => {
+      trigger.setAttribute("aria-expanded", String(open));
+      menu.classList.toggle("hidden", !open);
+      menu.hidden = !open;
+    };
+
+    trigger.addEventListener("click", () => setOpen(trigger.getAttribute("aria-expanded") !== "true"));
+    menu.addEventListener("click", () => setOpen(false));
+    document.addEventListener("click", (event) => {
+      if (!dropdown.contains(event.target as Node)) setOpen(false);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpen(false);
+    });
+  });
+</script>

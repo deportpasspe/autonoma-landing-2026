@@ -1,0 +1,38 @@
+---
+import type { ProgramCategory } from "../../content/page";
+
+interface Props {
+  group: ProgramCategory;
+  /** Spread the programs across the modal width instead of stacking them in one column. */
+  wide?: boolean;
+}
+
+const { group, wide = false } = Astro.props as Props;
+---
+
+<div>
+  <div class="flex items-center gap-2.5">
+    <img src={group.iconSrc} alt="" width="32" height="32" class="size-8 shrink-0 object-contain" />
+    <h3 class="text-[1rem] font-bold text-brand">{group.title}</h3>
+  </div>
+  <ul
+    class:list={[
+      "mt-2.5 list-disc text-[0.875rem] font-light leading-6",
+      wide && "grid gap-x-3 gap-y-3 sm:grid-cols-2 lg:grid-cols-3",
+    ]}
+  >
+    {
+      group.programs.map((program) => (
+        <li class:list={["ms-[21px]", wide && "py-1"]}>
+          <a
+            href="#inicio"
+            class="transition-colors hover:font-medium hover:text-brand hover:underline focus-visible:font-medium focus-visible:text-brand focus-visible:underline"
+            data-modal-close
+          >
+            {program}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>

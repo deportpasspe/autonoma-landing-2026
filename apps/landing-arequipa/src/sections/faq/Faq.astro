@@ -1,0 +1,152 @@
+---
+import type { PageContent } from "../../content/page";
+import Container from "@autonoma/ui/components/Container.astro";
+import Section from "@autonoma/ui/components/Section.astro";
+import UPatternDecor from "../../components/ui/UPatternDecor.astro";
+
+interface Props {
+  faq: PageContent["faq"];
+}
+
+const { faq } = Astro.props as Props;
+---
+
+<Section id="faq" tone="brand" ariaLabelledby="faq-title" class="!text-white">
+  <UPatternDecor placement="faq" side="right" />
+  <Container narrow>
+    <h2 id="faq-title" class="text-center text-section-title-aq font-bold" data-reveal>
+      {faq.title}
+    </h2>
+
+    <div class="mt-10" data-accordion="faq">
+      {
+        faq.items.map((item, index) => {
+          const open = index === 0;
+          return (
+            <div
+              class:list={[
+                "faq-acc-item mb-2",
+                open
+                  ? "rounded-[var(--radius-card)] border-b border-transparent bg-mint"
+                  : "rounded-none border-b border-white/40 bg-transparent",
+              ]}
+              data-accordion-item
+              data-open={open ? "true" : "false"}
+            >
+              <h3>
+                <button
+                  type="button"
+                  class:list={[
+                    "faq-acc-trigger flex w-full items-start justify-between gap-4 px-6 py-5 text-left text-body font-bold",
+                    open ? "text-brand" : "text-white",
+                  ]}
+                  aria-expanded={open ? "true" : "false"}
+                  data-accordion-trigger
+                >
+                  <span>{item.question}</span>
+                  <svg
+                    class:list={["faq-acc-chevron mt-1 size-6 shrink-0", open && "rotate-180"]}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                    data-accordion-chevron
+                  >
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  </svg>
+                </button>
+              </h3>
+              <div
+                class="faq-acc-panel"
+                data-accordion-panel
+                data-open={open ? "true" : "false"}
+                hidden={!open}
+              >
+                <div class="faq-acc-panel-inner">
+                  <p class="px-6 pb-5 text-small text-brand">{item.answer}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </Container>
+</Section>
+
+<script>
+  const root = document.querySelector('[data-accordion="faq"]');
+  if (root) {
+    const prefersReduced =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const durationMs = (() => {
+      const raw = getComputedStyle(document.documentElement).getPropertyValue("--duration-faq").trim();
+      if (raw.endsWith("ms")) return Number.parseFloat(raw) || 320;
+      if (raw.endsWith("s")) return (Number.parseFloat(raw) || 0.32) * 1000;
+      return 320;
+    })();
+
+    const items = Array.from(root.querySelectorAll<HTMLElement>("[data-accordion-item]"));
+    const timers = new WeakMap<HTMLElement, number>();
+
+    const setOpen = (item: HTMLElement, open: boolean) => {
+      const trigger = item.querySelector<HTMLButtonElement>("[data-accordion-trigger]");
+      const panel = item.querySelector<HTMLElement>("[data-accordion-panel]");
+      const chevron = item.querySelector<HTMLElement>("[data-accordion-chevron]");
+      if (!trigger || !panel) return;
+
+      const prev = timers.get(panel);
+      if (prev) window.clearTimeout(prev);
+
+      trigger.setAttribute("aria-expanded", String(open));
+      item.dataset.open = String(open);
+      trigger.classList.toggle("text-brand", open);
+      trigger.classList.toggle("text-white", !open);
+      chevron?.classList.toggle("rotate-180", open);
+
+      item.classList.toggle("rounded-[var(--radius-card)]", open);
+      item.classList.toggle("bg-mint", open);
+      item.classList.toggle("border-transparent", open);
+      item.classList.toggle("rounded-none", !open);
+      item.classList.toggle("bg-transparent", !open);
+      item.classList.toggle("border-white/40", !open);
+
+      if (open) {
+        panel.hidden = false;
+        // Forzar reflow para que el 0fr→1fr anime desde cerrado.
+        void panel.offsetHeight;
+        panel.dataset.open = "true";
+        panel.removeAttribute("data-animating");
+        return;
+      }
+
+      panel.dataset.open = "false";
+      panel.setAttribute("data-animating", "");
+
+      if (prefersReduced) {
+        panel.hidden = true;
+        panel.removeAttribute("data-animating");
+        return;
+      }
+
+      const id = window.setTimeout(() => {
+        if (panel.dataset.open === "false") {
+          panel.hidden = true;
+          panel.removeAttribute("data-animating");
+        }
+      }, durationMs);
+      timers.set(panel, id);
+    };
+
+    items.forEach((item) => {
+      const trigger = item.querySelector<HTMLButtonElement>("[data-accordion-trigger]");
+      if (!trigger) return;
+
+      trigger.addEventListener("click", () => {
+        const willOpen = trigger.getAttribute("aria-expanded") !== "true";
+        items.forEach((other) => setOpen(other, willOpen && other === item));
+      });
+    });
+  }
+</script>

@@ -1,0 +1,57 @@
+---
+import "@autonoma/ui/styles/global.css";
+import "../styles/arequipa.css";
+import latinFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2?url";
+import latinExtFont from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-ext-standard-normal.woff2?url";
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  lcpImage?: string;
+  noindex?: boolean;
+}
+
+const { title, description, canonical, lcpImage, noindex = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="canonical" href={canonical} />
+    {/* LCP image first so it wins bandwidth vs fonts on mobile. */}
+    {
+      lcpImage && (
+        <link
+          rel="preload"
+          as="image"
+          href={lcpImage}
+          imagesrcset="/assets/figma/arequipa/hero/hero-cover-828.webp 828w, /assets/figma/arequipa/hero/hero-cover.webp 1084w"
+          imagesizes="(min-width: 1024px) 75vw, 100vw"
+          fetchpriority="high"
+        />
+      )
+    }
+    {/* Latin + latin-ext: tildes en ES; evita CLS por font-swap tardío. */}
+    <link rel="preload" href={latinFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={latinExtFont} as="font" type="font/woff2" crossorigin />
+    <meta property="og:title" content={title} />    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="es_PE" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Saltar al contenido</a>
+    <slot />
+    <script>
+      import "../scripts/motion.ts";
+    </script>
+  </body>
+</html>

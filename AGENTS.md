@@ -1,16 +1,25 @@
 ## Development
 
-When starting the dev server, use background mode:
+When starting the dev server, prefer root workspace scripts:
 
 ```
-astro dev --background
+npm run dev:principal
+npm run dev:arequipa
 ```
+
+Or from an app folder: `astro dev --background`.
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
 
 ## Documentation
 
 Full documentation: https://docs.astro.build
+
+Monorepo layout:
+
+- `packages/ui` — shared design system
+- `apps/landing-principal` — approved landing
+- `apps/landing-arequipa` — Nueva sede Arequipa
 
 Consult these guides before working on related tasks:
 

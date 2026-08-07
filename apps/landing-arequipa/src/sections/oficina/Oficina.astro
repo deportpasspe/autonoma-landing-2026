@@ -1,0 +1,392 @@
+---
+import type { PageContent } from "../../content/page";
+import Container from "@autonoma/ui/components/Container.astro";
+import Section from "@autonoma/ui/components/Section.astro";
+import OficinaCard from "./OficinaCard.astro";
+
+interface Props {
+  oficina: PageContent["oficina"];
+}
+
+const { oficina } = Astro.props as Props;
+
+const [titleAccentFirst, ...titleAccentRest] = oficina.titleAccent.split(" ");
+const initial = oficina.features[0];
+const featureCount = oficina.features.length;
+---
+
+<Section id="oficina" tone="mint" ariaLabelledby="oficina-title">
+  <Container>
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 id="oficina-title" class="text-section-title-aq leading-tight reveal-lines" data-reveal-lines>
+        <span class="reveal-line-mask block">
+          <span class="reveal-line block font-light text-brand" style="--line-delay: 0ms">{oficina.title}</span>
+        </span>
+        <span class="reveal-line-mask block">
+          <span class="reveal-line block font-bold text-brand" style="--line-delay: 90ms">
+            {titleAccentFirst} <span class="text-negro">{titleAccentRest.join(" ")}</span>
+          </span>
+        </span>
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-small text-negro sm:mt-5" data-reveal>
+        {oficina.subtitle}
+      </p>
+    </div>
+
+    {/*
+      Mobile (Figma 33:9852): título → foto → carrusel → nav.
+      Desktop: foto | cards+nav en 2 columnas.
+    */}
+    <div
+      class="mt-8 flex flex-col gap-5 lg:mt-10 lg:grid lg:grid-cols-[minmax(0,664fr)_minmax(0,661fr)] lg:items-stretch lg:gap-6"
+      data-oficina-root
+    >
+      <div
+        id="oficina-panel"
+        role="tabpanel"
+        aria-labelledby={`oficina-tab-desktop-${initial.id}`}
+        aria-live="polite"
+        data-oficina-panel
+        class="min-w-0"
+      >
+        <div
+          class="oficina-photo relative aspect-[16/11] overflow-hidden rounded-[var(--radius-card)] sm:aspect-[664/508] lg:aspect-auto lg:h-full lg:min-h-[22rem]"
+        >
+          <div
+            class="absolute inset-0 origin-center"
+            data-parallax
+            data-parallax-speed="0.1"
+            data-parallax-max="36"
+          >
+            <img
+              src={initial.imageSrc}
+              alt={initial.imageAlt}
+              class="oficina-photo__img is-active"
+              width="664"
+              height="508"
+              loading="lazy"
+              data-oficina-photo
+              data-layer="a"
+            />
+            <img
+              src={initial.imageSrc}
+              alt=""
+              class="oficina-photo__img"
+              width="664"
+              height="508"
+              loading="lazy"
+              aria-hidden="true"
+              data-oficina-photo
+              data-layer="b"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="flex min-w-0 flex-col gap-5">
+        {/* Carrusel horizontal — evita el stack vertical que inflaba la sección. */}
+        <div
+          class="-mx-[var(--space-section-x)] overflow-x-auto overscroll-x-contain px-[var(--space-section-x)] pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:overflow-visible sm:px-0 sm:pb-0"
+          data-oficina-scroller
+        >
+          <div
+            role="tablist"
+            aria-label="Servicios de la oficina"
+            class="flex w-max snap-x snap-mandatory gap-3 sm:hidden"
+            data-oficina-tablist="mobile"
+          >
+            {
+              oficina.features.map((feature, index) => (
+                <div class="w-[min(15.5rem,78vw)] shrink-0 snap-center">
+                  <OficinaCard
+                    feature={feature}
+                    idPrefix="oficina-tab-mobile"
+                    selected={index === 0}
+                    tabIndex={index === 0 ? 0 : -1}
+                  />
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="hidden sm:block">
+          <div
+            role="tablist"
+            aria-label="Servicios de la oficina"
+            class="grid gap-5 sm:grid-cols-2"
+            data-oficina-tablist="desktop"
+          >
+            {
+              oficina.features.map((feature, index) => (
+                <OficinaCard
+                  feature={feature}
+                  idPrefix="oficina-tab-desktop"
+                  selected={index === 0}
+                  tabIndex={index === 0 ? 0 : -1}
+                />
+              ))
+            }
+          </div>
+        </div>
+
+        {
+          featureCount > 1 && (
+            <div
+              class="flex items-center justify-center gap-4"
+              data-oficina-nav
+              aria-label="Navegación de servicios"
+            >
+              <button
+                type="button"
+                class="inline-flex size-12 items-center justify-center rounded-full border border-brand bg-brand text-white transition-colors hover:bg-brand-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                aria-label="Servicio anterior"
+                data-oficina-prev
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                </svg>
+              </button>
+              <div class="flex items-center gap-3" data-oficina-dots>
+                {
+                  oficina.features.map((feature, index) => (
+                    <button
+                      type="button"
+                      class:list={[
+                        "h-4 rounded-full transition-all duration-[var(--duration-fast)] ease-[var(--ease-out)]",
+                        index === 0 ? "w-9 bg-brand" : "w-4 bg-brand/25 hover:bg-brand/40",
+                      ]}
+                      aria-label={`Ir a ${feature.title}`}
+                      aria-current={index === 0 ? "true" : undefined}
+                      data-oficina-dot
+                      data-feature-id={feature.id}
+                    />
+                  ))
+                }
+              </div>
+              <button
+                type="button"
+                class="inline-flex size-12 items-center justify-center rounded-full border border-brand bg-brand text-white transition-colors hover:bg-brand-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                aria-label="Siguiente servicio"
+                data-oficina-next
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                </svg>
+              </button>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </Container>
+</Section>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-oficina-root]");
+  if (root) {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const panel = root.querySelector<HTMLElement>("[data-oficina-panel]");
+    const photos = Array.from(root.querySelectorAll<HTMLImageElement>("[data-oficina-photo]"));
+    const allTabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-oficina-tab]"));
+    const dots = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-oficina-dot]"));
+    const prev = root.querySelector<HTMLButtonElement>("[data-oficina-prev]");
+    const next = root.querySelector<HTMLButtonElement>("[data-oficina-next]");
+    const scroller = root.querySelector<HTMLElement>("[data-oficina-scroller]");
+
+    const featureOrder = Array.from(
+      new Set(allTabs.map((tab) => tab.dataset.featureId).filter((id): id is string => Boolean(id))),
+    );
+
+    let activeLayer =
+      photos.find((img) => img.classList.contains("is-active")) ?? photos[0] ?? null;
+    let selectedId =
+      allTabs.find((tab) => tab.getAttribute("aria-selected") === "true")?.dataset.featureId ??
+      featureOrder[0] ??
+      "";
+
+    const syncPhoto = (src: string, alt: string) => {
+      if (!photos.length) return;
+      const current = activeLayer ?? photos[0];
+      if (!current || current.getAttribute("src") === src) {
+        if (current) current.alt = alt;
+        return;
+      }
+
+      const nextPhoto = photos.find((img) => img !== current) ?? photos[0];
+      if (!nextPhoto) return;
+
+      nextPhoto.src = src;
+      nextPhoto.alt = alt;
+
+      if (prefersReducedMotion) {
+        current.classList.remove("is-active");
+        current.alt = "";
+        current.setAttribute("aria-hidden", "true");
+        nextPhoto.classList.add("is-active");
+        nextPhoto.removeAttribute("aria-hidden");
+        activeLayer = nextPhoto;
+        return;
+      }
+
+      nextPhoto.classList.add("is-active");
+      nextPhoto.removeAttribute("aria-hidden");
+      current.classList.remove("is-active");
+      current.alt = "";
+      current.setAttribute("aria-hidden", "true");
+      activeLayer = nextPhoto;
+    };
+
+    const syncDots = (featureId: string) => {
+      dots.forEach((dot) => {
+        const active = dot.dataset.featureId === featureId;
+        dot.classList.toggle("w-9", active);
+        dot.classList.toggle("bg-brand", active);
+        dot.classList.toggle("w-4", !active);
+        dot.classList.toggle("bg-brand/25", !active);
+        dot.classList.toggle("hover:bg-brand/40", !active);
+        if (active) dot.setAttribute("aria-current", "true");
+        else dot.removeAttribute("aria-current");
+      });
+    };
+
+    const syncSelection = (featureId: string, { focus = false }: { focus?: boolean } = {}) => {
+      selectedId = featureId;
+      const mobileVisible = window.matchMedia("(max-width: 639px)").matches;
+      let labelledById = "";
+
+      allTabs.forEach((tab) => {
+        const isMatch = tab.dataset.featureId === featureId;
+        tab.setAttribute("aria-selected", String(isMatch));
+
+        const inMobile = Boolean(tab.closest("[data-oficina-tablist='mobile']"));
+        const inDesktop = Boolean(tab.closest("[data-oficina-tablist='desktop']"));
+
+        if (inMobile) {
+          tab.tabIndex = mobileVisible ? (isMatch ? 0 : -1) : -1;
+        } else if (inDesktop) {
+          tab.tabIndex = mobileVisible ? -1 : isMatch ? 0 : -1;
+        }
+
+        if (isMatch) {
+          if ((inMobile && mobileVisible) || (inDesktop && !mobileVisible)) {
+            labelledById = tab.id;
+          } else if (!labelledById) {
+            labelledById = tab.id;
+          }
+        }
+      });
+
+      const source = allTabs.find((tab) => tab.dataset.featureId === featureId);
+      if (source?.dataset.imageSrc) {
+        syncPhoto(source.dataset.imageSrc, source.dataset.imageAlt ?? "");
+      }
+
+      syncDots(featureId);
+
+      if (panel && labelledById) {
+        panel.setAttribute("aria-labelledby", labelledById);
+      }
+
+      if (focus && source) {
+        const visible = allTabs.find(
+          (tab) =>
+            tab.dataset.featureId === featureId &&
+            ((mobileVisible && tab.closest("[data-oficina-tablist='mobile']")) ||
+              (!mobileVisible && tab.closest("[data-oficina-tablist='desktop']"))),
+        );
+        visible?.focus();
+      }
+
+      if (mobileVisible && scroller) {
+        const mobileTab = allTabs.find(
+          (tab) =>
+            tab.dataset.featureId === featureId && tab.closest("[data-oficina-tablist='mobile']"),
+        );
+        const card = mobileTab?.closest(".shrink-0") ?? mobileTab;
+        card?.scrollIntoView({
+          inline: "center",
+          block: "nearest",
+          behavior: prefersReducedMotion ? "auto" : "smooth",
+        });
+      }
+    };
+
+    const stepFeature = (delta: number) => {
+      const index = featureOrder.indexOf(selectedId);
+      if (index < 0 || featureOrder.length === 0) return;
+      const nextId = featureOrder[(index + delta + featureOrder.length) % featureOrder.length];
+      if (nextId) syncSelection(nextId);
+    };
+
+    const tabsInList = (tablist: Element) =>
+      Array.from(tablist.querySelectorAll<HTMLButtonElement>("[data-oficina-tab]"));
+
+    const moveInTablist = (tablist: Element, current: HTMLButtonElement, delta: number) => {
+      const tabs = tabsInList(tablist);
+      const index = tabs.indexOf(current);
+      if (index < 0 || tabs.length === 0) return;
+      const nextTab = tabs[(index + delta + tabs.length) % tabs.length];
+      if (!nextTab?.dataset.featureId) return;
+      syncSelection(nextTab.dataset.featureId, { focus: true });
+    };
+
+    allTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        if (!tab.dataset.featureId) return;
+        syncSelection(tab.dataset.featureId);
+      });
+
+      tab.addEventListener("keydown", (event) => {
+        const tablist = tab.closest("[data-oficina-tablist]");
+        if (!tablist) return;
+
+        switch (event.key) {
+          case "ArrowRight":
+          case "ArrowDown":
+            event.preventDefault();
+            moveInTablist(tablist, tab, 1);
+            break;
+          case "ArrowLeft":
+          case "ArrowUp":
+            event.preventDefault();
+            moveInTablist(tablist, tab, -1);
+            break;
+          case "Home":
+            event.preventDefault();
+            {
+              const first = tabsInList(tablist)[0];
+              if (first?.dataset.featureId) syncSelection(first.dataset.featureId, { focus: true });
+            }
+            break;
+          case "End":
+            event.preventDefault();
+            {
+              const list = tabsInList(tablist);
+              const last = list[list.length - 1];
+              if (last?.dataset.featureId) syncSelection(last.dataset.featureId, { focus: true });
+            }
+            break;
+          default:
+            break;
+        }
+      });
+    });
+
+    dots.forEach((dot) => {
+      dot.addEventListener("click", () => {
+        if (!dot.dataset.featureId) return;
+        syncSelection(dot.dataset.featureId);
+      });
+    });
+
+    prev?.addEventListener("click", () => stepFeature(-1));
+    next?.addEventListener("click", () => stepFeature(1));
+
+    syncSelection(selectedId);
+
+    window.matchMedia("(max-width: 639px)").addEventListener("change", () => {
+      syncSelection(selectedId);
+    });
+  }
+</script>

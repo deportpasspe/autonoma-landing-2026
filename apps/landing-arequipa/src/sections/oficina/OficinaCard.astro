@@ -1,0 +1,43 @@
+---
+import type { OfficeFeature } from "../../content/page";
+import IconMask from "../../components/ui/IconMask.astro";
+
+interface Props {
+  feature: OfficeFeature;
+  /** Prefijo para IDs únicos entre el listado móvil y el carrusel desktop. */
+  idPrefix: string;
+  selected?: boolean;
+  tabIndex?: number;
+}
+
+const { feature, idPrefix, selected = false, tabIndex = -1 } = Astro.props as Props;
+const tabId = `${idPrefix}-${feature.id}`;
+---
+
+<button
+  type="button"
+  role="tab"
+  id={tabId}
+  class:list={[
+    // La inversión de colores del estado activo vive en `arequipa.css`, que la
+    // comparte con `:hover` y `:focus-visible`.
+    "oficina-card flex h-full w-full flex-col rounded-[var(--radius-card)] p-6 text-left",
+    "border border-brand/40 text-brand",
+    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
+  ]}
+  aria-selected={selected ? "true" : "false"}
+  aria-controls="oficina-panel"
+  tabindex={tabIndex}
+  data-oficina-tab
+  data-feature-id={feature.id}
+  data-image-src={feature.imageSrc}
+  data-image-alt={feature.imageAlt}
+>
+  <div class="oficina-card__icon flex size-[60px] shrink-0 items-center justify-center rounded-full bg-brand">
+    <IconMask src={feature.iconSrc} class="size-8 bg-white" />
+  </div>
+  <h3 class="mt-5 text-h3 font-bold">{feature.title}</h3>
+  <p class="oficina-card__desc mt-2 text-small leading-snug text-brand-dark">
+    {feature.description}
+  </p>
+</button>

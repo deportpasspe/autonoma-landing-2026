@@ -1,0 +1,83 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import Section from "@autonoma/ui/components/Section.astro";
+import BrandCoverBg from "@autonoma/ui/components/BrandCoverBg.astro";
+import Container from "@autonoma/ui/components/Container.astro";
+import Heading from "@autonoma/ui/components/Heading.astro";
+import Button from "@autonoma/ui/components/Button.astro";
+import { getSettings } from "../lib/cms";
+import { buildPageMeta } from "../lib/seo/meta";
+
+const settings = await getSettings();
+
+const gracias = {
+  title: "Gracias | Universidad Autónoma del Perú",
+  description:
+    "Hemos recibido tu solicitud. Un asesor de la Universidad Autónoma del Perú se pondrá en contacto contigo pronto.",
+  heading: "¡Gracias por contactarnos!",
+  body: "Hemos recibido tu solicitud correctamente. Un asesor de la Universidad Autónoma del Perú se pondrá en contacto contigo muy pronto para orientarte.",
+  ctaLabel: "Volver al inicio",
+};
+
+const meta = buildPageMeta({
+  title: gracias.title,
+  description: gracias.description,
+  path: "/gracias",
+});
+
+const toHomeAnchor = (href: string) => (href.startsWith("#") ? `/${href}` : href);
+
+const graciasSettings = {
+  ...settings,
+  navLinks: settings.navLinks.map((link) => ({
+    ...link,
+    href: toHomeAnchor(link.href),
+  })),
+};
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  canonical={meta.canonical}
+  lcpImage="/assets/figma/hero/hero-cover.webp"
+  noindex
+>
+  <Header settings={graciasSettings} />
+  <main id="main-content">
+    <Section
+      tone="brand"
+      class="flex min-h-[70vh] items-center !pt-32 md:!pt-36"
+      ariaLabelledby="gracias-heading"
+    >
+      <BrandCoverBg eager />
+      <Container narrow>
+        <div class="mx-auto flex max-w-xl flex-col items-center text-center" data-reveal>
+          <span
+            class="mb-6 flex size-16 items-center justify-center rounded-full bg-white text-brand"
+            aria-hidden="true"
+          >
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 12.5l5 5L19 7"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </span>
+          <Heading as="h1" size="h2" id="gracias-heading" class="text-white">
+            {gracias.heading}
+          </Heading>
+          <p class="mt-4 text-body text-white/90">{gracias.body}</p>
+          <Button href="/" variant="primary" class="mt-8 !normal-case !tracking-normal">
+            {gracias.ctaLabel}
+          </Button>
+        </div>
+      </Container>
+    </Section>
+  </main>
+  <Footer settings={settings} />
+</BaseLayout>

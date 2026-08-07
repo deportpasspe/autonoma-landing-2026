@@ -1,0 +1,116 @@
+---
+import type { PageContent } from "../../content/page";
+import Container from "@autonoma/ui/components/Container.astro";
+import Section from "@autonoma/ui/components/Section.astro";
+
+interface Props {
+  blog: PageContent["blog"];
+}
+
+const { blog } = Astro.props as Props;
+---
+
+<Section id="blog" tone="white" ariaLabelledby="blog-title">
+  <Container>
+    <h2
+      id="blog-title"
+      class="text-center text-section-title-aq font-bold text-brand"
+      data-reveal
+    >
+      {blog.title}
+    </h2>
+
+    <div class="mt-8 border-b border-border" role="tablist" aria-label={blog.title}>
+      <div class="flex justify-center gap-12">
+        {
+          blog.tabs.map((tab, index) => (
+            <button
+              type="button"
+              role="tab"
+              id={`blog-tab-${index}`}
+              aria-selected={index === 0 ? "true" : "false"}
+              aria-controls="blog-panel"
+              class:list={[
+                "-mb-px min-h-11 border-b-2 px-2 pb-3 text-body font-bold transition-colors",
+                index === 0
+                  ? "border-brand text-brand"
+                  : "border-transparent text-negro hover:text-brand",
+              ]}
+              data-blog-tab
+            >
+              {tab}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div id="blog-panel" role="tabpanel" aria-labelledby="blog-tab-0" class="mt-8 grid gap-10 lg:grid-cols-2">
+      <article data-reveal>
+        <a href={blog.featured.href} class="group block">
+          <div class="relative overflow-hidden rounded-[var(--radius-card)]">
+            <img
+              src={blog.featured.imageSrc}
+              alt=""
+              class="aspect-[714/527] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              width="714"
+              height="527"
+              loading="lazy"
+            />
+            <p class="absolute left-4 top-4 rounded-lg bg-white px-3 py-2 text-center leading-none shadow-sm">
+              <span class="block text-h2 font-bold text-brand">{blog.featured.day}</span>
+              <span class="mt-1 block text-xs font-semibold text-negro">{blog.featured.month}</span>
+            </p>
+          </div>
+          <h3 class="mt-5 text-h2 font-bold group-hover:text-brand">{blog.featured.title}</h3>
+          <p class="mt-2 text-body text-negro">{blog.featured.excerpt}</p>
+        </a>
+      </article>
+
+      <ul class="grid content-start gap-6" data-reveal-stagger>
+        {
+          blog.cards.map((card) => (
+            <li class="border-t border-border pt-6 first:border-t-0 first:pt-0" data-reveal-item>
+              <a href={card.href} class="group grid grid-cols-[120px_minmax(0,1fr)] gap-5">
+                <div class="relative overflow-hidden rounded-[var(--radius-card)]">
+                  <img
+                    src={card.imageSrc}
+                    alt=""
+                    class="aspect-square w-full object-cover"
+                    width="120"
+                    height="120"
+                    loading="lazy"
+                  />
+                  <p class="absolute left-2 top-2 rounded-md bg-white px-2 py-1 text-center leading-none shadow-sm">
+                    <span class="block text-body font-bold text-brand">{card.day}</span>
+                    <span class="mt-0.5 block text-[10px] font-semibold text-negro">{card.month}</span>
+                  </p>
+                </div>
+                <div>
+                  <h3 class="text-body font-bold group-hover:text-brand">{card.title}</h3>
+                  <p class="mt-2 text-small text-negro">{card.excerpt}</p>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Container>
+</Section>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>("[data-blog-tab]");
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((other) => {
+        const active = other === tab;
+        other.setAttribute("aria-selected", String(active));
+        other.classList.toggle("border-brand", active);
+        other.classList.toggle("text-brand", active);
+        other.classList.toggle("border-transparent", !active);
+        other.classList.toggle("text-negro", !active);
+      });
+    });
+  });
+</script>

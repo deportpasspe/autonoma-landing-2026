@@ -1,0 +1,57 @@
+---
+import type { PageContent } from "../content/page";
+import type { SiteSettings } from "../content/site";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import LeadForm from "../components/forms/LeadForm.astro";
+import ModalPregrado from "../components/modals/ModalPregrado.astro";
+import ModalPosgrado from "../components/modals/ModalPosgrado.astro";
+import ModalController from "../components/modals/ModalController.astro";
+import Hero from "../sections/hero/Hero.astro";
+import Oferta from "../sections/oferta/Oferta.astro";
+import Oficina from "../sections/oficina/Oficina.astro";
+import Virtual from "../sections/virtual/Virtual.astro";
+import Espacios from "../sections/espacios/Espacios.astro";
+import Aliados from "../sections/aliados/Aliados.astro";
+import Contacto from "../sections/contacto/Contacto.astro";
+import Testimonios from "../sections/testimonios/Testimonios.astro";
+import Faq from "../sections/faq/Faq.astro";
+import Blog from "../sections/blog/Blog.astro";
+
+interface Props {
+  page: PageContent;
+  settings: SiteSettings;
+}
+
+const { page, settings } = Astro.props as Props;
+---
+
+<Header settings={settings} />
+<main id="main-content">
+  <Hero hero={page.hero}>
+    <LeadForm
+      slot="form"
+      title={page.form.title}
+      submitLabel={page.form.submitLabel}
+      levels={page.form.levels}
+      campuses={page.form.campuses}
+      pregradoCategories={page.pregradoCategories}
+      posgradoTabs={page.posgradoTabs}
+    />
+  </Hero>
+
+  <Oferta oferta={page.oferta} />
+  <Oficina oficina={page.oficina} />
+  <Virtual virtual={page.virtual} />
+  <Espacios espacios={page.espacios} />
+  <Aliados aliados={page.aliados} />
+  <Contacto contacto={page.contacto} />
+  <Testimonios testimonios={page.testimonios} />
+  <Faq faq={page.faq} />
+  <Blog blog={page.blog} />
+</main>
+<Footer settings={settings} />
+
+<ModalPregrado categories={page.pregradoCategories} />
+<ModalPosgrado tabs={page.posgradoTabs} />
+<ModalController />

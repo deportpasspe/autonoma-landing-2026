@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ArequipaView from "../views/ArequipaView.astro";
+import { page } from "../content/page";
+import { site } from "../content/site";
+import { buildPageMeta } from "../lib/seo";
+
+const meta = buildPageMeta({
+  title: page.title,
+  description: page.description,
+  path: "/",
+});
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  canonical={meta.canonical}
+  lcpImage={page.hero.imageSrc}
+>
+  <ArequipaView page={page} settings={site} />
+</BaseLayout>

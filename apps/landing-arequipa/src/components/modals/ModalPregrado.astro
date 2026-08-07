@@ -1,0 +1,36 @@
+---
+import type { ProgramCategory } from "../../content/page";
+import ProgramGroup from "./ProgramGroup.astro";
+
+interface Props {
+  categories: ProgramCategory[];
+}
+
+const { categories } = Astro.props as Props;
+---
+
+<dialog
+  id="modal-pregrado"
+  class="fixed inset-0 z-[100] m-auto max-h-[90vh] w-[min(880px,calc(100%-2rem))] overflow-auto bg-transparent p-0 text-negro backdrop:bg-negro/50"
+  data-modal="pregrado"
+  aria-labelledby="modal-pregrado-title"
+>
+  <h2 id="modal-pregrado-title" class="sr-only">Pregrado 100% Virtual</h2>
+
+  <button
+    type="button"
+    class="mb-5 ml-auto flex size-10 items-center justify-center rounded-full bg-white text-brand transition-colors hover:bg-mint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+    aria-label="Cerrar"
+    data-modal-close
+  >
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  </button>
+
+  <div class="rounded-[14px] bg-white p-8 sm:p-10">
+    <div class="grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-[1fr_1.7fr_1fr]">
+      {categories.map((cat) => <ProgramGroup group={cat} />)}
+    </div>
+  </div>
+</dialog>

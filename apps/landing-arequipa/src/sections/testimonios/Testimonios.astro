@@ -1,0 +1,71 @@
+---
+import type { PageContent } from "../../content/page";
+import Container from "@autonoma/ui/components/Container.astro";
+import Section from "@autonoma/ui/components/Section.astro";
+
+interface Props {
+  testimonios: PageContent["testimonios"];
+}
+
+const { testimonios } = Astro.props as Props;
+---
+
+<Section id="testimonios" tone="mint" ariaLabelledby="testimonios-title">
+  <Container>
+    <div class="mx-auto max-w-2xl text-center">
+      <h2
+        id="testimonios-title"
+        class="text-section-title-aq font-bold text-brand reveal-lines"
+        data-reveal-lines
+      >
+        <span class="reveal-line-mask block">
+          <span class="reveal-line block" style="--line-delay: 0ms">{testimonios.title}</span>
+        </span>
+      </h2>
+      <p class="mt-4 text-small text-brand" data-reveal>{testimonios.subtitle}</p>
+    </div>
+
+    <div class="mt-10 -mx-[var(--space-section-x)] overflow-x-auto px-[var(--space-section-x)] pb-2 lg:mx-0 lg:overflow-visible lg:px-0 lg:pb-0">
+      <ul class="flex w-max gap-4 lg:grid lg:w-auto lg:grid-cols-3 lg:gap-6" data-reveal-stagger>
+      {
+        testimonios.items.map((item) => (
+          <li class="w-[min(22.25rem,86vw)] shrink-0 lg:w-auto lg:shrink" data-reveal-item>
+            <article class="relative aspect-[356/498] overflow-hidden rounded-[var(--radius-card)]">
+              <img
+                src={item.imageSrc}
+                alt={`Testimonio de ${item.name}`}
+                class="absolute inset-0 size-full object-cover"
+                width="356"
+                height="498"
+                loading="lazy"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-negro/85 via-negro/25 to-transparent"
+                aria-hidden="true"
+              />
+
+              <div class="relative flex h-full flex-col items-center justify-end p-6 text-center text-white">
+                <a
+                  href={item.videoUrl}
+                  class="absolute left-1/2 top-1/2 flex size-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-brand transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  aria-label={`Ver el testimonio de ${item.name}`}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M8 5.5v13l11-6.5-11-6.5z" />
+                  </svg>
+                </a>
+
+                <h3 class="text-h2 font-bold">{item.name}</h3>
+                <p class="mt-1 text-small text-white/90">{item.description}</p>
+                <span class="mt-4 inline-flex min-h-9 items-center rounded-full bg-brand px-5 text-small font-semibold">
+                  {item.program}
+                </span>
+              </div>
+            </article>
+          </li>
+        ))
+      }
+      </ul>
+    </div>
+  </Container>
+</Section>
