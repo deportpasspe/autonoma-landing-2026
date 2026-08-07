@@ -1,0 +1,40 @@
+---
+description: Autonoma landings monorepo conventions
+globs: apps/**/*,packages/**/*
+alwaysApply: false
+---
+
+# Autonoma Landings Monorepo
+
+Follow `@astro-frontend-starter` skill patterns.
+
+## Structure
+
+- `packages/ui` (`@autonoma/ui`) — shared tokens + UI primitives
+- `apps/landing-principal` — approved landing (frozen)
+- `apps/landing-arequipa` — Nueva sede Arequipa
+
+## Import direction
+
+```
+pages → views → sections → @autonoma/ui | components/layout | components/modals
+```
+
+Never reverse this hierarchy.
+
+## Language
+
+- Spanish only (`lang="es"`)
+- Home at `/` — no locale prefixes
+
+## Design system
+
+- Use tokens from `@autonoma/ui/styles/global.css` — no raw hex in sections
+- Use UI primitives from `@autonoma/ui/components/*`
+- Arequipa: content from `src/content/` fixtures (no CMS)
+
+## Before shipping
+
+1. `npm run check:arequipa` / `npm run check:principal`
+2. `npm run build:arequipa` / `npm run build:principal`
+3. `npm run export:arequipa` for clean HTML handoff

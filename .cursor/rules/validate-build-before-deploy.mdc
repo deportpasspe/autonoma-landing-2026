@@ -1,0 +1,19 @@
+---
+description: Siempre validar build/check antes de deploy o push a main
+alwaysApply: true
+---
+
+# Validar build antes de deploy
+
+Antes de considerar listo un cambio que va a **Vercel**, **push a `main`**, o un **deploy pedido por el usuario**:
+
+1. Correr el build del app afectado y esperar éxito (exit 0).
+   - Arequipa: `npm run build -w apps/landing-arequipa`
+   - Principal: `npm run build -w apps/landing-principal`
+2. Si el pipeline usa `astro check` / `tsc`, el comando de build del workspace ya los incluye: **no omitir** ni saltar checks.
+3. Si el build falla (p. ej. error TS en scripts de `.astro`), **arreglar antes** de commit/push/deploy.
+4. No reportar “listo en producción” hasta confirmar build verde (local y/o deploy Ready en Vercel).
+
+## Ejemplo reciente
+
+`event.relatedTarget` tipado como `Event` rompió `astro check` en Vercel. Cast correcto: `(event as FocusEvent).relatedTarget`.

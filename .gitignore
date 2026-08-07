@@ -24,7 +24,10 @@ pnpm-debug.log*
 .idea/
 
 # editor / local tooling
-.cursor/
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
+
 tmp/
 .verify-screenshots/
 .vercel

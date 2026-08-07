@@ -11,6 +11,16 @@ Or from an app folder: `astro dev --background`.
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
 
+## Build / deploy gate
+
+Before push to `main` or any Vercel deploy, run the workspace build and ensure it exits 0:
+
+```
+npm run build -w apps/landing-arequipa
+```
+
+(or `landing-principal` when that app changed). Fix `astro check` / `tsc` errors before shipping.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build
